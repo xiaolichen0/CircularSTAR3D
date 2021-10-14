@@ -56,8 +56,8 @@ in the same directory.
 
 * Example
 ```
-java -cp CircularSTAR3D.jar Preprocess 3f2x X\
-java -cp CircularSTAR3D.jar Preprocess 4frn B\
+java -cp CircularSTAR3D.jar Preprocess 3f2x X
+java -cp CircularSTAR3D.jar Preprocess 4frn B
 java -jar CircularSTAR3D.jar -s 2 -n 100 3f2x X 4frn B
 ```
 
