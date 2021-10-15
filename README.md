@@ -33,7 +33,7 @@ Fedora/CentOS: "yum install ant"
 the package.
 
 * Installation\
-Go to the STAR3D home directory and execute "ant jar".
+Go to the CircularSTAR3D home directory and execute "ant jar".
 (The users can also clean the compiled files by executing "ant clean")
 
 * Preprocessing\
