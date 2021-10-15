@@ -40,13 +40,13 @@ Go to the STAR3D home directory and execute "ant jar".
 CircularSTAR3D downloads PDB files and preprocesses them to retrieve the 
 secondary structural information.
 
-	Go to the STAR3D home directory and execute 
+	Go to the CircularSTAR3D home directory and execute 
 "java -cp CircularSTAR3D.jar Preprocess [PDB ID] [Chain ID]".
 
 Notice: Make sure the fold "tools" and file "CircularSTAR3D.jar" in the same directory. 
 
 * Structural Alignment\
-Go to the STAR3D home directory and execute 
+Go to the CircularSTAR3D home directory and execute 
 "java -jar CircularSTAR3D.jar [PDB1 ID] [Chain1 ID] [PDB2 ID] [Chain2 ID]"
 More options for the program can be seen by executing 
 "java -jar CircularSTAR3D.jar -h"
