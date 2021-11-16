@@ -71,4 +71,4 @@ EJML: http://ejml.org/wiki/index.php?title=Main_Page
 	Third party software DSSR was downloaded from http://forum.x3dna.org/rna-structures/.
   
 * CONTACTS\
-For bug reports or comments please contact shaojie.zhang@ucf.edu.
+For bug reports or comments please contact shzhang@cs.ucf.edu.
