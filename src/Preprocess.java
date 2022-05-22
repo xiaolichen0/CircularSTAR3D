@@ -11,6 +11,13 @@ public class Preprocess {
 			System.exit(0);
 		}
 
+		String DSSR_err_msg = "Failed to run DSSR or locate DSSR annotations.\n" +
+				"How to solve this issue?\n" +
+				"1. Download DSSR into tools/. After that, you will have tools/DSSR/x3dna-dssr.\n" +
+				"2. If you don't have DSSR, you can copy the DSSR annotation for your PDB into STAR3D_struct_info/." +
+				"For example, if you want to preprocess PDB 6d90, you can manually copy your 6d90.dssr file into STAR3D_struct_info/" +
+				"For users to duplicate the results in our NAR paper, the related DSSR files are provided along with the package.";
+
 		String PDBID=args[0];
 		String chainID=args[1];
 
@@ -18,7 +25,7 @@ public class Preprocess {
 
 		//get the path STAR3D.jar
 		String STAR3D_PATH = new File(Preprocess.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParentFile().getPath();
-//		String STAR3D_PATH = "/home/xiaoli/software/ori_star/cSTAR3D/STAR3D_source/";//for debug
+
 		System.out.println(STAR3D_PATH);
 		File PDB_DATA_PATH=new File(STAR3D_PATH, "PDB");
 		File SI_DATA_PATH=new File(STAR3D_PATH, "STAR3D_struct_info");
@@ -37,7 +44,6 @@ public class Preprocess {
 
 		if((!PDB_fn.exists() || ! PDB_fn.isFile()) && (!PDBx_fn.exists() || ! PDBx_fn.isFile())){
 
-			// System.out.println("Downloading PDB file "+PDBID+".pdb...");
 			System.out.println("Downloading PDB file for "+PDBID+"...");
 
 			List<String> pdb_url = new ArrayList<>();
@@ -100,25 +106,37 @@ public class Preprocess {
 		}
 
 		File anno_file = null;
-
 		anno_file = new File(SI_DATA_PATH, PDBID + ".dssr");
-		if (!anno_file.exists() || anno_file.length() == 0) {
-			if(pdb_type == 1) {
-				System.out.println("Processing " + PDBID + ".cif with DSSR...");
-			}
-			if(pdb_type == 0)
-				System.out.println("Processing " + PDBID + ".pdb with DSSR...");
-			Process p = Runtime.getRuntime().exec(new File(STAR3D_PATH, "tools/DSSR/x3dna-dssr").toString() + " --nested -i=" + PDB_fn);
-			BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
-			PrintWriter out = new PrintWriter(anno_file);
-			String line;
-			while ((line = in.readLine()) != null) out.println(line);
-			out.close();
-			in.close();
-			p.waitFor();
+		File DSSR_exe_file = new File("tools/DSSR/x3dna-dssr\"");
 
-			p = Runtime.getRuntime().exec(new File(STAR3D_PATH, "tools/DSSR/x3dna-dssr").toString() + " --cleanup");
-			p.waitFor();
+//		if(!(anno_file.exists() && anno_file.length() > 0 || DSSR_exe_file.exists())){
+//			throw new Exception(DSSR_err_msg);
+//		}
+
+		if(anno_file.exists() && anno_file.length() >= 0){
+			System.out.println("Using existing DSSR annotation files");
+		} else {
+			try {
+				if (pdb_type == 1) {
+					System.out.println("Processing " + PDBID + ".cif with DSSR...");
+				}
+				if (pdb_type == 0)
+					System.out.println("Processing " + PDBID + ".pdb with DSSR...");
+				Process p = Runtime.getRuntime().exec(new File(STAR3D_PATH, "tools/DSSR/x3dna-dssr").toString() + " --nested -i=" + PDB_fn);
+				BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
+				PrintWriter out = new PrintWriter(anno_file);
+				String line;
+				while ((line = in.readLine()) != null) out.println(line);
+				out.close();
+				in.close();
+				p.waitFor();
+
+				p = Runtime.getRuntime().exec(new File(STAR3D_PATH, "tools/DSSR/x3dna-dssr").toString() + " --cleanup");
+				p.waitFor();
+			} catch(Exception e)  {
+				System.out.println(DSSR_err_msg);
+				System.exit(1);
+			}
 		}
 
 		File npk_ct_fn=new File(SI_DATA_PATH, PDBID+'_'+chainID+".ct");
