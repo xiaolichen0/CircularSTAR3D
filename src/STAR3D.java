@@ -76,10 +76,10 @@ public class STAR3D{
 		options.addOption("i", true, "Mismatch score");
 		options.addOption("d", true, "Include dangling end");
 		options.addOption("c", true, "E-stack distance cutoff");
-		options.addOption("n", true, "number of alignments");
-		options.addOption("f", true, "fix stacks");
-		options.addOption("l", true, "clique finding timeout");
-		options.addOption("motif", false, "motif mode");
+		options.addOption("n", true, "Number of alignments");
+		options.addOption("f", true, "Fix stacks");
+		options.addOption("l", true, "Clique finding timeout");
+		options.addOption("motif", false, "Motif mode");
 
 		CommandLineParser parser = new BasicParser();
 		CommandLine cmd = null;
