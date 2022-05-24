@@ -37,7 +37,7 @@ secondary structural information.
 Go to the CircularSTAR3D home directory and execute 
 "java -cp CircularSTAR3D.jar Preprocess [PDB ID] [Chain ID]".
 
-Notice: Make sure the fold "tools" and file "CircularSTAR3D.jar" in the same directory. 
+Notice: Make sure the fold "tools" and file "CircularSTAR3D.jar" in the same directory. If you see "Exception in thread "main" java.lang.UnsupportedClassVersionError", try to delete the files in class/ folder and run "ant jar".
 
 ### Structural Alignment
 Go to the CircularSTAR3D home directory and execute 
