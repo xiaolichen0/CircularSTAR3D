@@ -5,7 +5,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)  
 
 Where appropriate, please cite the following circularSTAR3D paper:
-Chen et al. "CircularSTAR3D: a stack-based RNA 3D structural alignment tool for rotated matching.
+Chen et al. "CircularSTAR3D: a stack-based RNA 3D structural alignment tool for circular matching.
 
 ### Requirement
 CircularSTAR3D is implemented by using java 1.8 and can be executed in 64-bit 
