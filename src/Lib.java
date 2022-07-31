@@ -125,15 +125,6 @@ public class Lib {
 			return true;
 		}
 
-//		System.out.println("false");
-//		System.out.println(R);
-//		System.out.println(v);
-//		for(Integer i : R){
-//			System.out.print(STAR3D.SM_top.get(i)+" ");
-//		}
-//		System.out.println();
-//		System.out.println(STAR3D.SM_top.get(v)+" ");
-//		System.out.println();
 		return false;
 	}
 
@@ -533,16 +524,6 @@ public class Lib {
 	public static void get_bp_list_ordered(Set<Pair<Integer,Integer>> bp_list, int i, int j, int dir){
 		bp_list.add(new Pair<Integer, Integer>(i, j, 1));
 
-//		bp_list.add(new Pair<Integer, Integer>(i-1, j+1, 1));
-//		bp_list.add(new Pair<Integer, Integer>(i, j+1, 1));
-//		bp_list.add(new Pair<Integer, Integer>(i-1, j, 1));
-//
-//		bp_list.add(new Pair<Integer, Integer>(i-1, j+2, 1));
-//		bp_list.add(new Pair<Integer, Integer>(i-2, j+1, 1));
-//		bp_list.add(new Pair<Integer, Integer>(i-2, j+2, 1));
-//		bp_list.add(new Pair<Integer, Integer>(i-2, j, 1));
-//		bp_list.add(new Pair<Integer, Integer>(i, j+2, 1));
-
 		bp_list.add(new Pair<Integer, Integer>(i+dir, j-dir, 1));
 		bp_list.add(new Pair<Integer, Integer>(i, j-dir, 1));
 		bp_list.add(new Pair<Integer, Integer>(i+dir, j, 1));
@@ -789,10 +770,6 @@ public class Lib {
 				out.println(STAR3D.ResID1_list.get(cur_aln.rna1_index.get(nt_index))+"<->"+STAR3D.ResID2_list.get(cur_aln.rna2_index.get(nt_index)));
 			}
 
-//			out.println("#for debug");
-//			out.println("loop score: " + cur_aln.loop_score);
-//			out.println("stack score: " + cur_aln.stack_score);
-
 			out.println("#for pymol");
 
 			out.print("0	"+PDBID1+"	"+chainID1+"	");
@@ -812,15 +789,6 @@ public class Lib {
 					aln2 += ",";
 			}
 			out.println(aln2 + "\t" + aln2);
-
-//			out.println("#stack nt");
-//			for(int nt_index =0; nt_index < cur_aln.rna1_stack_index.size();nt_index++) {
-//				out.println(ResID1_list.get(cur_aln.rna1_stack_index.get(nt_index))+"<->"+ResID2_list.get(cur_aln.rna2_stack_index.get(nt_index)));
-//			}
-//			out.println("#loop nt");
-//			for(int nt_index =0; nt_index < cur_aln.rna1_loop_index.size();nt_index++) {
-//				out.println(ResID1_list.get(cur_aln.rna1_loop_index.get(nt_index))+"<->"+ResID2_list.get(cur_aln.rna2_loop_index.get(nt_index)));
-//			}
 
 			out.println("#########");
 		}
@@ -882,6 +850,39 @@ public class Lib {
 				junction_id.add(i);
 			}
 		}
+	}
 
+	public static void get_matrices(
+			List<Integer> Map1_index,
+			List<Integer> Map2_index,
+			Point stack_XC,
+			Point stack_YC,
+			DenseMatrix64F stack_R
+	){
+		DenseMatrix64F Map1_stack_X = new DenseMatrix64F(Map1_index.size(), 3);
+		DenseMatrix64F Map2_stack_Y = new DenseMatrix64F(Map2_index.size(), 3);
+
+		for (int i = 0; i < Map1_index.size(); i++) {
+			Map1_stack_X.set(i, 0, STAR3D.coord1.get(Map1_index.get(i)).x);
+			Map1_stack_X.set(i, 1, STAR3D.coord1.get(Map1_index.get(i)).y);
+			Map1_stack_X.set(i, 2, STAR3D.coord1.get(Map1_index.get(i)).z);
+
+			Map2_stack_Y.set(i, 0, STAR3D.coord2.get(Map2_index.get(i)).x);
+			Map2_stack_Y.set(i, 1, STAR3D.coord2.get(Map2_index.get(i)).y);
+			Map2_stack_Y.set(i, 2, STAR3D.coord2.get(Map2_index.get(i)).z);
+		}
+
+		Point _XC = Geom.centroid(Map1_stack_X);
+		stack_XC.x = _XC.x;
+		stack_XC.y = _XC.y;
+		stack_XC.z = _XC.z;
+
+		Point _YC = Geom.centroid(Map2_stack_Y);
+		stack_YC.x = _YC.x;
+		stack_YC.y = _YC.y;
+		stack_YC.z = _YC.z;
+
+		DenseMatrix64F _R = Geom.Kabsch(Geom.translation(Map1_stack_X, stack_XC), Geom.translation(Map2_stack_Y, stack_YC));
+		stack_R.set(_R.numRows, _R.numCols, true, _R.data);
 	}
 }

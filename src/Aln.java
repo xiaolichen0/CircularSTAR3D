@@ -13,6 +13,7 @@
 //}
 
 import java.util.*;
+import org.ejml.data.*;
 
 public class Aln implements Comparable<Aln>{
 
@@ -41,7 +42,7 @@ public class Aln implements Comparable<Aln>{
                List<Integer> rna2_loop_index, List<Integer> rna1_stack_index, List<Integer> rna2_stack_index,
                double rmsd, double score, double loop_score, double stack_score, Set<Integer> aligned_stack,
                boolean contain_junction, List<List<Integer>> info, Set<Integer> seed_loop_sm
-    ){
+               ){
         this.rna1_index=rna1_index;
         this.rna2_index=rna2_index;
         this.rna1_loop_index = rna1_loop_index;

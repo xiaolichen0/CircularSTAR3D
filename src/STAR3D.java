@@ -13,24 +13,15 @@ public class STAR3D{
 	 * The global parameters.
 	 */
 	public static String output_fn="output.aln";
+	public static int pdb_output=0;
 	public static double rmsd_cutoff=4.0;
 	public static int min_stack_size=3;
 	public static int thread_num=1;
-
-	// motif mode
-//	public static double gap_open_penalty=-1.5;
-//	public static double gap_extend_penalty=-1.;
-//	public static double match_score=3.;
-//	public static double mismatch_score=0.;
-//	public static double stack_discount = 0.6;
-
 	public static double gap_open_penalty=-5.;
 	public static double gap_extend_penalty=-2.;
 	public static double match_score=3.;
 	public static double mismatch_score=0.;
 	public static double stack_discount = 1;
-
-	//public static boolean pdb_output=false;
 	public static int map_num=5;
 	public static int seed_num=100;
 	public static long startTime = 0;
@@ -40,7 +31,6 @@ public class STAR3D{
 	public static String annotate_tool = null;
 	public static boolean no_dangle_end = false;
 	public static double loop_penalty_limit = gap_open_penalty + gap_extend_penalty*(connect_distance-1);
-	public static boolean consider_all_cliques = false;
 	public static boolean fix_stacks = true;
 	public static int clique_time = 5;
 
@@ -79,6 +69,7 @@ public class STAR3D{
 		options.addOption("n", true, "Number of alignments");
 		options.addOption("f", true, "Fix stacks");
 		options.addOption("l", true, "Clique finding timeout");
+		options.addOption("p", true, "the number of top alignments with PDB output");
 		options.addOption("motif", false, "Motif mode");
 
 		CommandLineParser parser = new BasicParser();
@@ -121,21 +112,11 @@ public class STAR3D{
 		if (cmd.getOptionValue("f") != null) STAR3D.fix_stacks = Boolean.parseBoolean(cmd.getOptionValue("f"));
 		if (cmd.getOptionValue("d") != null) STAR3D.no_dangle_end = Boolean.parseBoolean(cmd.getOptionValue("d"));
 		if (cmd.getOptionValue("l") != null) STAR3D.clique_time = Integer.parseInt(cmd.getOptionValue("l"));
+		if(cmd.getOptionValue("p") != null) STAR3D.pdb_output=Integer.parseInt(cmd.getOptionValue("p"));
 
-		if (cmd.hasOption("d") == true) {
-			STAR3D.no_dangle_end = true;
-		}
-
-		if (cmd.hasOption("motif") == true) {
-			STAR3D.motif_mode = true;
-			STAR3D.min_stack_size = 2;
-			STAR3D.no_dangle_end = true;
-			STAR3D.minimum_aligned_loop_size = 1;
-		}
+		if (cmd.hasOption("d") == true) {STAR3D.no_dangle_end = true;}
 
 		String STAR3D_PATH = new File(STAR3D.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParentFile().getPath();
-
-//		String STAR3D_PATH = "/home/xiaoli/software/ori_star/cSTAR3D/STAR3D_source/";
 
 		File PDB_DATA_PATH = new File(STAR3D_PATH, "PDB");
 		File SI_DATA_PATH = new File(STAR3D_PATH, "STAR3D_struct_info");
@@ -177,9 +158,6 @@ public class STAR3D{
 		Map<Integer, Integer> ResID_to_star3d_index2 = new HashMap<>();
 		Lib.reverse_index(ResID1_list, ResID_to_star3d_index1);
 		Lib.reverse_index(ResID2_list, ResID_to_star3d_index2);
-
-		String seq1 = PDB1_parser.get_chain_seq(chainID1);
-		String seq2 = PDB2_parser.get_chain_seq(chainID2);
 
 		coord1 = PDB1_parser.get_chain_centroid(chainID1);
 		coord2 = PDB2_parser.get_chain_centroid(chainID2);
@@ -240,37 +218,21 @@ public class STAR3D{
 		}
 
 		Collections.sort(SM_all);
-//		SM_top = SM_all;
 		SM_top = SM_all.subList(0, Math.min(SM_all.size(), 20000));
-
 		System.out.println("Stack pair number: "+SM_top.size());
 
 		/*********************** assign stack pairs to loop pairs *********************************/
 		Map<Pair<Integer, Integer>, Set<Integer>> loopInRNAs_to_sm = new HashMap<>();
-
-		//for motif mode
-
 
 		Map<Pair<Integer, Integer>, Integer> bp_to_loop1 = new HashMap<>();
 		Map<Pair<Integer, Integer>, Integer> bp_to_loop2 = new HashMap<>();
 		Lib.get_bp_close_loop_and_shrink(DSSR1_parser, bp_to_loop1, npk_bp1, ResID_to_star3d_index1, seed_loop_nt1);
 		Lib.get_bp_close_loop_and_shrink(DSSR2_parser, bp_to_loop2, npk_bp2, ResID_to_star3d_index2, seed_loop_nt2);
 
-//		System.out.println("seed_loop_nt1");
-//		for (Integer nt : seed_loop_nt1) {
-//			System.out.print(nt+" ");
-//		}
-//		System.out.println();
-
-//		for (Pair<Integer, Integer> bp : bp_to_loop2.keySet()) {
-//			System.out.println("("+ResID2_list.get(bp.left)+","+ResID2_list.get(bp.right)+") loop"+bp_to_loop2.get(bp));
-//		}
-
 		for (int i = 0; i < SM_top.size(); i++) {
 			Lib.assign_sm_to_loop(SM_top, loopInRNAs_to_sm, bp_to_loop1, bp_to_loop2, i);
 		}
 
-		// for testing
 		Set<Integer> junction_sm = new HashSet<>();
 		Set<Integer> junction_id_1 = new HashSet<>();
 		Set<Integer> junction_id_2 = new HashSet<>();
@@ -280,7 +242,6 @@ public class STAR3D{
 			if(junction_id_1.contains(p.left) && junction_id_2.contains(p.right))
 				junction_sm.addAll(loopInRNAs_to_sm.get(p));
 		}
-		// end for testing
 
 		Set<Set<Integer>> compatible_loop_sm = new HashSet<>();
 		Map<Set<Integer>, Pair<Integer, Integer>> loop_sm_to_loop = new HashMap<>();
@@ -313,7 +274,6 @@ public class STAR3D{
 
 			/*********************** get stack sets *********************************/
 			//build smc graph
-//			int edge_count = 0;
 			Map<Integer, Set<Integer>> SMC_graph = new HashMap<>();
 			for (Pair<Integer, Integer> sm_pair : SMC_loop) {
 				// if v = 0, rotate pattern unmatch
@@ -323,22 +283,15 @@ public class STAR3D{
 					SMC_graph.put(sm_pair.right, new HashSet<>());
 
 				if(sm_pair.left!=sm_pair.right) {
-//					edge_count += 1;
 					SMC_graph.get(sm_pair.left).add(sm_pair.right);
 					SMC_graph.get(sm_pair.right).add(sm_pair.left);
 				}
 			}
 
 			List<Set<Integer>> SM_clique_loop = new ArrayList<Set<Integer>>();
-
 			Lib.Bron_Kerbosch(SMC_graph, new HashSet<Integer>(), new HashSet<>(SMC_graph.keySet()), new HashSet<Integer>(), SM_clique_loop);
 
-//			System.out.println("SM_clique_loop: " + SM_clique_loop.size());
-//			for(Set<Integer> s : SM_clique_loop)
-//				System.out.println(s+" ");
-
 			/*********************** keep loop with rotated match sm *********************************/
-			// Set<Set<Integer>> max_cliques_for_cur_loop = new HashSet<>();
 			for (Set<Integer> C : SM_clique_loop) {
 				if (C.size() == 0)
 					continue;
@@ -354,24 +307,7 @@ public class STAR3D{
 
 				 compatible_loop_sm.add(C);
 				 loop_sm_to_loop.put(C, p);
-
-//				int BP_size = 0;
-//				int max_clique_size = 0;
-
-//				for (Integer I : C) {
-//					BP_size += SM_top.get(I).size;
-//				}
-//
-//				if (BP_size > max_clique_size) {
-//					max_clique_size = BP_size;
-//					max_cliques_for_cur_loop.clear();
-//					max_cliques_for_cur_loop.add(C);
-//				}
 			}
-//			compatible_loop_sm.addAll(max_cliques_for_cur_loop);
-//			for(Set<Integer> C : max_cliques_for_cur_loop)
-//				loop_sm_to_loop.put(C, p);
-
 		}
 
 		if(compatible_loop_sm.size() == 0){
@@ -400,15 +336,13 @@ public class STAR3D{
 			if (BP_size < bp_cutoff)
 				seed_to_rm.add(C);
 		}
-
-		compatible_loop_sm.removeAll(seed_to_rm);//8_18
+		compatible_loop_sm.removeAll(seed_to_rm);
 
 		Set<Set<Integer>> seed_loop_sm = new HashSet<Set<Integer>>();
 		Map<Set<Integer>, List<List<Integer>>> seed_loop_to_info = new HashMap<>();
 		// from clique to junction loop alignment
-
-		Map<Pair<Pair<Integer, Integer>, Integer>, Pair<Integer, Integer>> stack_stand_to_loop1 = new HashMap<>();
-		Map<Pair<Pair<Integer, Integer>, Integer>, Pair<Integer, Integer>> stack_stand_to_loop2 = new HashMap<>();
+		Map<Pair<Pair<Integer, Integer>, Integer>, Pair<Integer, Integer>> stack_strand_to_loop1 = new HashMap<>();
+		Map<Pair<Pair<Integer, Integer>, Integer>, Pair<Integer, Integer>> stack_strand_to_loop2 = new HashMap<>();
 
 		System.out.println("Phase I: seed search");
 
@@ -452,30 +386,8 @@ public class STAR3D{
 
 			// get junction loop from stack in seeds
 			for (int i = 0; i < Map1_stack_strand.size() - 1; i++) {
-//				if (Map2_stack_strand.get(i).right > Map2_stack_strand.get(i + 1).left) { // the open gap in RNA 2 stack //
-//					Map1_loop.add(new Pair<Integer, Integer>(Map1_stack_strand.get(i).right + 1, Map1_stack_strand.get(i + 1).left - 1, 0));
-//					Map2_loop.add(new Pair<Integer, Integer>(Map2_stack_strand.get(i).right + 1, Map2_stack_strand.get(i + 1).left - 1, 0));
-//					continue;
-//				}
 				if (Map1_stack_strand.get(i).v != Map1_stack_strand.get(i + 1).v || //remove hairpin loop, change to || 8_8
 						Map2_stack_strand.get(i).v != Map2_stack_strand.get(i + 1).v) { //remove hairpin loop
-
-//					if (Map1_stack_strand.get(i).right + 1 > Map1_stack_strand.get(i + 1).left - 1)
-//						Map1_loop.add(new Pair<Integer, Integer>(-1, -1, 0));
-//					else
-//						Map1_loop.add(new Pair<Integer, Integer>(Map1_stack_strand.get(i).right + 1, Map1_stack_strand.get(i + 1).left - 1, 0));
-//
-//					if (Map2_stack_strand.get(i).right + 1 > Map2_stack_strand.get(i + 1).left - 1)
-//						Map2_loop.add(new Pair<Integer, Integer>(-1, -1, 0));
-//					else
-//						Map2_loop.add(new Pair<Integer, Integer>(Map2_stack_strand.get(i).right + 1, Map2_stack_strand.get(i + 1).left - 1, 0));
-
-//					Map1_loop.add(new Pair<Integer, Integer>(Map1_stack_strand.get(i).right + 1, Map1_stack_strand.get(i + 1).left - 1, 0));
-//					if (Map2_stack_strand.get(i).right + 1 > Map2_stack_strand.get(i + 1).left - 1)
-//						Map2_loop.add(new Pair<Integer, Integer>(-1, -1, 0));
-//					else
-//						Map2_loop.add(new Pair<Integer, Integer>(Map2_stack_strand.get(i).right + 1, Map2_stack_strand.get(i + 1).left - 1, 0));
-
                     // adjacent stack, no loop in between
                     if((Map1_stack_strand.get(i).right + 1 == Map1_stack_strand.get(i + 1).left) ||
                             (Map2_stack_strand.get(i).right + 1 == Map2_stack_strand.get(i + 1).left)) //8_7
@@ -488,8 +400,8 @@ public class STAR3D{
 
 					Pair<Pair<Integer, Integer>, Integer> cur_stack_strand_pair1 = new Pair<Pair<Integer, Integer>, Integer>(Map1_stack_strand.get(i), Map1_stack_strand.get(i+1),0);
 					Pair<Pair<Integer, Integer>, Integer> cur_stack_strand_pair2 = new Pair<Pair<Integer, Integer>, Integer>(Map2_stack_strand.get(i), Map2_stack_strand.get(i+1),0);
-					stack_stand_to_loop1.put(cur_stack_strand_pair1, cur_loop1);
-					stack_stand_to_loop2.put(cur_stack_strand_pair2, cur_loop2);
+					stack_strand_to_loop1.put(cur_stack_strand_pair1, cur_loop1);
+					stack_strand_to_loop2.put(cur_stack_strand_pair2, cur_loop2);
 				}
 			}
 
@@ -513,8 +425,8 @@ public class STAR3D{
 
                 Pair<Pair<Integer, Integer>, Integer> cur_stack_strand_pair1 = new Pair<Pair<Integer, Integer>, Integer>(last_strand1, first_strand1, 0);
                 Pair<Pair<Integer, Integer>, Integer> cur_stack_strand_pair2 = new Pair<Pair<Integer, Integer>, Integer>(last_strand2, first_strand2, 0);
-                stack_stand_to_loop1.put(cur_stack_strand_pair1, cur_loop1);//8_4
-                stack_stand_to_loop2.put(cur_stack_strand_pair2, cur_loop2);//8_4
+                stack_strand_to_loop1.put(cur_stack_strand_pair1, cur_loop1);
+                stack_strand_to_loop2.put(cur_stack_strand_pair2, cur_loop2);
             }
 
 			//get the mapping between the loop nt
@@ -636,10 +548,10 @@ public class STAR3D{
 							|| left_strand1.right+1 > right_strand1.left-1 || left_strand2.right+1 > right_strand2.left-1))
 						continue;
 
-                    if(stack_stand_to_loop1.keySet().contains(new Pair<Pair<Integer, Integer>, Integer>(left_strand1, right_strand1, 0)) &&
-                            stack_stand_to_loop2.keySet().contains(new Pair<Pair<Integer, Integer>, Integer>(left_strand2, right_strand2, 0)) ){ //8_6 seeds internal
-						cur_loop1 = stack_stand_to_loop1.get(new Pair<Pair<Integer, Integer>, Integer>(left_strand1, right_strand1, 0));
-						cur_loop2 = stack_stand_to_loop2.get(new Pair<Pair<Integer, Integer>, Integer>(left_strand2, right_strand2, 0));
+                    if(stack_strand_to_loop1.keySet().contains(new Pair<Pair<Integer, Integer>, Integer>(left_strand1, right_strand1, 0)) &&
+                            stack_strand_to_loop2.keySet().contains(new Pair<Pair<Integer, Integer>, Integer>(left_strand2, right_strand2, 0)) ){ //8_6 seeds internal
+						cur_loop1 = stack_strand_to_loop1.get(new Pair<Pair<Integer, Integer>, Integer>(left_strand1, right_strand1, 0));
+						cur_loop2 = stack_strand_to_loop2.get(new Pair<Pair<Integer, Integer>, Integer>(left_strand2, right_strand2, 0));
 					}else{
 						if(!(left_strand1.right == ResID1_list.size()-1 || right_strand1.left== 0 || left_strand1.right+1 == right_strand1.left))
 							cur_loop1 = new Pair<Integer, Integer>(left_strand1.right + 1, right_strand1.left - 1, 0);
@@ -679,8 +591,6 @@ public class STAR3D{
 				/*************************** loop aln for extended stack sets**************************/
 				List<Pair<Integer, Integer>> Map_loop_align = new ArrayList<Pair<Integer, Integer>>();
 
-//				System.out.println(Map1_loop);
-//				System.out.println(Map2_loop);
 
 				double Map_loop_score = Lib.run_loop_aln(Map_loop_align, Map1_loop, Map2_loop, bp1_map, bp2_map, coord1, coord2, stack_R, stack_XC, stack_YC, false);
 
@@ -697,20 +607,6 @@ public class STAR3D{
 
 				double Map_rmsd = Geom.cal_rmsd_from_index(Map1_index, Map2_index, coord1, coord2);
 
-//				System.out.print("Map_rmsd: ");
-//				System.out.println(Map_rmsd);
-//				System.out.print("comb_score: ");
-//				System.out.println(comb_score);
-//				System.out.print("loop_score: ");
-//				System.out.println(Map_loop_score);
-//				for(int i=0;i<Map1_index.size();i++){
-//					System.out.print(Res1_list.get(Map1_index.get(i)));
-//					System.out.print("<->");
-//					System.out.println(Res2_list.get(Map2_index.get(i)));
-//				}
-//				System.out.println("");
-
-				// for testing
 				boolean contain_junction = true;
 				for(Integer i : C_seed_loop) {
 					if (!junction_sm.contains(i)) {
@@ -718,12 +614,13 @@ public class STAR3D{
 						break;
 					}
 				}
-				// end for testing
 
 				List<List<Integer>> cur_info = seed_loop_to_info.get(C_seed_loop);
 				if (Map_rmsd <= STAR3D.rmsd_cutoff){
 					Aln new_aln = new Aln(Map1_index, Map2_index, Map1_loop_index, Map2_loop_index,
-							Map1_stack_index, Map2_stack_index, Map_rmsd, comb_score, Map_loop_score, map_stack_score, s, contain_junction, cur_info, C_seed_loop);
+							Map1_stack_index, Map2_stack_index, Map_rmsd, comb_score, Map_loop_score,
+							map_stack_score, s, contain_junction, cur_info, C_seed_loop
+							);
 
 					Aln overlapped_aln = Lib.overlapped_with_old_alns(new_aln, Alns);
 					if(overlapped_aln==null){
@@ -740,7 +637,66 @@ public class STAR3D{
 				}
 			}
 		}
+
+		if(STAR3D.pdb_output >0) {
+			PriorityQueue<Aln> Alns_copy = new PriorityQueue<Aln>(map_num);
+			Alns_copy.addAll(Alns);
+			for (int i = 0; i< STAR3D.pdb_output; i++) {
+				//get the transition and rotate matrix for the stacking mapping
+				Point Map1_XC = new Point(-1, -1, -1);
+				Point Map2_YC = new Point(-1, -1, -1);
+				DenseMatrix64F Map_R = new DenseMatrix64F(3,3);
+
+				Aln cur_aln = Alns_copy.poll();
+				Lib.get_matrices(cur_aln.rna1_index, cur_aln.rna2_index, Map1_XC, Map2_YC, Map_R);
+
+				PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(STAR3D.output_fn + Integer.toString(i+1) + ".pdb")));
+				DenseMatrix64F Atom_coord = new DenseMatrix64F(1, 3);
+				DenseMatrix64F Atom_coord_T = new DenseMatrix64F(3, 1);
+				DenseMatrix64F Atom_coord_R = new DenseMatrix64F(3, 1);
+
+				out.println("MODEL        1");
+				for (Atom A : PDB1_parser.get_chain_atom().get(""+chainID1.charAt(0))) {
+					if(!cur_aln.rna1_index.contains(ResID_to_star3d_index1.get(A.res.rid.seqnum)))
+						continue;
+					Atom_coord.set(0, 0, A.coord.x);
+					Atom_coord.set(0, 1, A.coord.y);
+					Atom_coord.set(0, 2, A.coord.z);
+					Atom_coord = Geom.translation(Atom_coord, Map1_XC);
+
+					CommonOps.transpose(Atom_coord, Atom_coord_T);
+					CommonOps.mult(Map_R, Atom_coord_T, Atom_coord_R);
+
+					out.println("ATOM  " + String.format("%5d", A.sn) + " " + String.format("%-4s", A.atom) + " " + String.format("%3s", A.res.symbol) + " " +
+							"A" + String.format("%4d", A.res.rid.seqnum) + A.res.rid.icode + "   " +
+							String.format("%8.3f", Atom_coord_R.get(0, 0)) + String.format("%8.3f", Atom_coord_R.get(1, 0)) + String.format("%8.3f", Atom_coord_R.get(2, 0)) + "  1.00 99.99"
+					);
+				}
+				out.println("ENDMDL");
+
+				out.println("MODEL        2");
+				for (Atom A : PDB2_parser.get_chain_atom().get(""+chainID2.charAt(0))) {
+					if(!cur_aln.rna2_index.contains(ResID_to_star3d_index2.get(A.res.rid.seqnum)))
+						continue;
+					Atom_coord.set(0, 0, A.coord.x);
+					Atom_coord.set(0, 1, A.coord.y);
+					Atom_coord.set(0, 2, A.coord.z);
+					Atom_coord = Geom.translation(Atom_coord, Map2_YC);
+
+					out.println("ATOM  " + String.format("%5d", A.sn) + " " + String.format("%-4s", A.atom) + " " + String.format("%3s", A.res.symbol) + " " +
+							"B" + String.format("%4d", A.res.rid.seqnum) + A.res.rid.icode + "   " +
+							String.format("%8.3f", Atom_coord.get(0, 0)) + String.format("%8.3f", Atom_coord.get(0, 1)) + String.format("%8.3f", Atom_coord.get(0, 2)) + "  1.00 99.99"
+					);
+				}
+
+				out.println("ENDMDL");
+
+				out.close();
+			}
+		}
+
 		Lib.print_result(Alns, PDBID1, chainID1, PDBID2, chainID2);
+
 		System.exit(0);
 	}
 }
