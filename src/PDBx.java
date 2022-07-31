@@ -1,20 +1,7 @@
 import java.io.*;
 import java.util.*;
 
-public class PDBx implements PDBParser{
-    static ArrayList<String> Reijmers_atoms=new ArrayList<String>(Arrays.asList("C3'", "C4'", "C5'", "O3'", "O5'", "P"));	//heavy atoms used in Reijmers' paper
-
-    HashMap<String, ArrayList<Residue>> chain_res;	//key: chain; value: residue
-    HashMap<String, ArrayList<Atom>> chain_atom;	//key: chain; value: coordinates of residue;
-
-    public HashMap<String, ArrayList<Residue>> get_chain_res() {
-        return chain_res;
-    }
-
-    public HashMap<String, ArrayList<Atom>> get_chain_atom() {
-        return chain_atom;
-    }
-
+public class PDBx extends PDBParser{
     public PDBx(File fname, String _chainID)  throws IOException{
 
         chain_res = new HashMap<String, ArrayList<Residue>>();
@@ -115,41 +102,4 @@ public class PDBx implements PDBParser{
         }
         in.close();
     }
-
-    //return the RNA sequence for chain (N for unknown residue)
-    public String get_chain_seq(String chainID){
-        String seq="";
-
-        for(Residue R: chain_res.get(chainID)){
-            if(R.symbol.equals("A") || R.symbol.equals("C")|| R.symbol.equals("G") || R.symbol.equals("U"))
-                seq+=R.symbol;
-            else
-                seq+="N";
-        }
-        return seq;
-    }
-
-    public ArrayList<Point> get_chain_centroid(String chainID){
-        ArrayList<ArrayList<Point>> coord = new ArrayList<ArrayList<Point>>();
-        ArrayList<Point> centroid = new ArrayList<Point>();
-
-        ResID cur_rid=new ResID(null, -1, '\0');
-
-        for(Atom A: chain_atom.get(chainID)){
-            if (A.res.rid.equals(cur_rid)==false) {coord.add(new ArrayList<Point>());  cur_rid=A.res.rid;};
-            if (Reijmers_atoms.contains(A.atom)) coord.get(coord.size()-1).add(A.coord);
-        }
-
-        for(ArrayList<Point> L: coord){
-            centroid.add(Geom.centroid(L));
-        }
-
-        return centroid;
-    }
-
-//    public static void main(String args[]) throws Exception{
-//        PDBx pdb=new PDBx(new File("/home/xiaoli/software/ori_star/STAR3D_source/pdbx/4xej.cif"), "AIRE");
-//        for(Residue A: pdb.chain_res.get("AIRE")) System.out.println(A);
-//    }
-
 }
