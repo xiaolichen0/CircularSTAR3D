@@ -52,7 +52,7 @@ in the same directory.
 ```
 python3 run_circularSTAR3D.py --preprocess --pdb-id 3f2x --chain-id X
 python3 run_circularSTAR3D.py --preprocess --pdb-id 4frn --chain-id B
-python3 run_circularSTAR3D.py --minimum-stack-size 2 --number-of-alignments 100 --pdb-id1 3f2x --chain-id1 X --pdb-id2 4frn --chain-id2 B
+python3 run_circularSTAR3D.py --minimum-stack-size 2 --pdb-id1 4frn --chain-id1 B --pdb-id2 3f2x --chain-id2 X
 ```
 
 ### ACKNOWLEDGEMENTS

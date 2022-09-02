@@ -14,7 +14,7 @@ public class STAR3D{
 	 * The global parameters.
 	 */
 	public static String output_fn="output.aln";
-
+	public static int pdb_output=0;
 	public static double rmsd_cutoff=4.0;
 	public static int min_stack_size=3;
 	public static double gap_open_penalty=-5.;
@@ -22,7 +22,6 @@ public class STAR3D{
 	public static int thread_num=8;
 	public static double match_score=3.;
 	public static double mismatch_score=0.;
-	//public static boolean pdb_output=false;
 	public static int map_num=5;
 	public static long startTime = 0;
 	public static long totalTime = 0;
@@ -38,6 +37,9 @@ public class STAR3D{
 
 	public static ArrayList<ResID> ResID1_list = new ArrayList<ResID>();
 	public static ArrayList<ResID> ResID2_list = new ArrayList<ResID>();
+
+	public static List<Point> coord1 = new ArrayList<>();
+	public static List<Point> coord2 = new ArrayList<>();
 
 	public static boolean debug = false;
 
@@ -63,6 +65,7 @@ public class STAR3D{
 		options.addOption("n", true, "number of alignments");
 		options.addOption("f", true, "fix stacks");
 		options.addOption("l", true, "clique finding timeout");
+		options.addOption("p", true, "the number of top alignments with PDB output");
 
 		CommandLineParser parser = new BasicParser();
 		CommandLine cmd = null;
@@ -105,6 +108,7 @@ public class STAR3D{
 		if (cmd.getOptionValue("f") != null) STAR3D.fix_stacks = Boolean.parseBoolean(cmd.getOptionValue("f"));
 		if (cmd.getOptionValue("d") != null) STAR3D.dangle_end = Boolean.parseBoolean(cmd.getOptionValue("d"));
 		if (cmd.getOptionValue("l") != null) STAR3D.clique_time = Integer.parseInt(cmd.getOptionValue("l"));
+		if(cmd.getOptionValue("p") != null) STAR3D.pdb_output=Integer.parseInt(cmd.getOptionValue("p"));
 		/*
 		 * Parse MCA files
 		 */
@@ -147,16 +151,19 @@ public class STAR3D{
 		ArrayList<Residue> Res1_list = PDB1_parser.get_chain_res().get(chainID1);
 		ArrayList<Residue> Res2_list = PDB2_parser.get_chain_res().get(chainID2);
 
-//		ArrayList<ResID> ResID1_list = new ArrayList<ResID>();
-//		ArrayList<ResID> ResID2_list = new ArrayList<ResID>();
 		for (Residue R : Res1_list) ResID1_list.add(R.rid);
 		for (Residue R : Res2_list) ResID2_list.add(R.rid);
+
+		Map<Integer, Integer> ResID_to_star3d_index1 = new HashMap<>();
+		Map<Integer, Integer> ResID_to_star3d_index2 = new HashMap<>();
+		Lib.reverse_index(ResID1_list, ResID_to_star3d_index1);
+		Lib.reverse_index(ResID2_list, ResID_to_star3d_index2);
 
 		String seq1 = PDB1_parser.get_chain_seq(chainID1);
 		String seq2 = PDB2_parser.get_chain_seq(chainID2);
 
-		ArrayList<Point> coord1 = PDB1_parser.get_chain_centroid(chainID1);
-		ArrayList<Point> coord2 = PDB2_parser.get_chain_centroid(chainID2);
+		coord1 = PDB1_parser.get_chain_centroid(chainID1);
+		coord2 = PDB2_parser.get_chain_centroid(chainID2);
 
 		File anno1_file = null, anno2_file = null;
 		DSSR DSSR1_parser = null, DSSR2_parser = null;
@@ -604,6 +611,8 @@ public class STAR3D{
 		    System.out.println(Alns.size());
 
 		List<Aln> aln_list = new ArrayList<Aln>();
+		PriorityQueue<Aln> Alns_for_pdb_print = new PriorityQueue<Aln>(map_num);
+		Alns_for_pdb_print.addAll(Alns);
 		while(!Alns.isEmpty()) {
 			aln_list.add(Alns.poll());
 		}
@@ -644,6 +653,64 @@ public class STAR3D{
 		out.close();
 		if(debug)
 		    System.out.println("Done!");
+
+		if(STAR3D.pdb_output >0) {
+
+
+			for (int i = 0; i< STAR3D.pdb_output; i++) {
+				//get the transition and rotate matrix for the stacking mapping
+				Point Map1_XC = new Point(-1, -1, -1);
+				Point Map2_YC = new Point(-1, -1, -1);
+				DenseMatrix64F Map_R = new DenseMatrix64F(3,3);
+
+				Aln cur_aln = Alns_for_pdb_print.poll();
+				Lib.get_matrices(cur_aln.rna1_index, cur_aln.rna2_index, Map1_XC, Map2_YC, Map_R);
+
+				PrintWriter PDBout = new PrintWriter(new BufferedWriter(new FileWriter(STAR3D.output_fn + Integer.toString(i+1) + ".pdb")));
+				DenseMatrix64F Atom_coord = new DenseMatrix64F(1, 3);
+				DenseMatrix64F Atom_coord_T = new DenseMatrix64F(3, 1);
+				DenseMatrix64F Atom_coord_R = new DenseMatrix64F(3, 1);
+
+				PDBout.println("MODEL        1");
+				for (Atom A : PDB1_parser.get_chain_atom().get(""+chainID1.charAt(0))) {
+					if(!cur_aln.rna1_index.contains(ResID_to_star3d_index1.get(A.res.rid.seqnum)))
+						continue;
+					Atom_coord.set(0, 0, A.coord.x);
+					Atom_coord.set(0, 1, A.coord.y);
+					Atom_coord.set(0, 2, A.coord.z);
+					Atom_coord = Geom.translation(Atom_coord, Map1_XC);
+
+					CommonOps.transpose(Atom_coord, Atom_coord_T);
+					CommonOps.mult(Map_R, Atom_coord_T, Atom_coord_R);
+
+					PDBout.println("ATOM  " + String.format("%5d", A.sn) + " " + String.format("%-4s", A.atom) + " " + String.format("%3s", A.res.symbol) + " " +
+							"A" + String.format("%4d", A.res.rid.seqnum) + A.res.rid.icode + "   " +
+							String.format("%8.3f", Atom_coord_R.get(0, 0)) + String.format("%8.3f", Atom_coord_R.get(1, 0)) + String.format("%8.3f", Atom_coord_R.get(2, 0)) + "  1.00 99.99"
+					);
+				}
+				PDBout.println("ENDMDL");
+
+				PDBout.println("MODEL        2");
+				for (Atom A : PDB2_parser.get_chain_atom().get(""+chainID2.charAt(0))) {
+					if(!cur_aln.rna2_index.contains(ResID_to_star3d_index2.get(A.res.rid.seqnum)))
+						continue;
+					Atom_coord.set(0, 0, A.coord.x);
+					Atom_coord.set(0, 1, A.coord.y);
+					Atom_coord.set(0, 2, A.coord.z);
+					Atom_coord = Geom.translation(Atom_coord, Map2_YC);
+
+					PDBout.println("ATOM  " + String.format("%5d", A.sn) + " " + String.format("%-4s", A.atom) + " " + String.format("%3s", A.res.symbol) + " " +
+							"B" + String.format("%4d", A.res.rid.seqnum) + A.res.rid.icode + "   " +
+							String.format("%8.3f", Atom_coord.get(0, 0)) + String.format("%8.3f", Atom_coord.get(0, 1)) + String.format("%8.3f", Atom_coord.get(0, 2)) + "  1.00 99.99"
+					);
+				}
+
+				PDBout.println("ENDMDL");
+
+				PDBout.close();
+			}
+		}
+
 		System.exit(0);
 	}
 }

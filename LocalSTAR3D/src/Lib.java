@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.*;
+import org.ejml.data.DenseMatrix64F;
 
 public class Lib {
 	//get the base pair (index based) on a sequence coming from a PDB file
@@ -287,5 +288,44 @@ public class Lib {
         return npk_bp;
     }
 
+	public static void reverse_index(List<ResID> ResID, Map<Integer, Integer> ResID_to_star3d_index){
+		for(Integer i=0;i<ResID.size();i++){
+			ResID_to_star3d_index.put(ResID.get(i).seqnum, i);
+		}
+	}
+
+	public static void get_matrices(
+			List<Integer> Map1_index,
+			List<Integer> Map2_index,
+			Point stack_XC,
+			Point stack_YC,
+			DenseMatrix64F stack_R
+	){
+		DenseMatrix64F Map1_stack_X = new DenseMatrix64F(Map1_index.size(), 3);
+		DenseMatrix64F Map2_stack_Y = new DenseMatrix64F(Map2_index.size(), 3);
+
+		for (int i = 0; i < Map1_index.size(); i++) {
+			Map1_stack_X.set(i, 0, STAR3D.coord1.get(Map1_index.get(i)).x);
+			Map1_stack_X.set(i, 1, STAR3D.coord1.get(Map1_index.get(i)).y);
+			Map1_stack_X.set(i, 2, STAR3D.coord1.get(Map1_index.get(i)).z);
+
+			Map2_stack_Y.set(i, 0, STAR3D.coord2.get(Map2_index.get(i)).x);
+			Map2_stack_Y.set(i, 1, STAR3D.coord2.get(Map2_index.get(i)).y);
+			Map2_stack_Y.set(i, 2, STAR3D.coord2.get(Map2_index.get(i)).z);
+		}
+
+		Point _XC = Geom.centroid(Map1_stack_X);
+		stack_XC.x = _XC.x;
+		stack_XC.y = _XC.y;
+		stack_XC.z = _XC.z;
+
+		Point _YC = Geom.centroid(Map2_stack_Y);
+		stack_YC.x = _YC.x;
+		stack_YC.y = _YC.y;
+		stack_YC.z = _YC.z;
+
+		DenseMatrix64F _R = Geom.Kabsch(Geom.translation(Map1_stack_X, stack_XC), Geom.translation(Map2_stack_Y, stack_YC));
+		stack_R.set(_R.numRows, _R.numCols, true, _R.data);
+	}
 }
 
