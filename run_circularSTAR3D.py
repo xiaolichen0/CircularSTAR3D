@@ -15,33 +15,39 @@ option_map = {
     "number_of_alignments": "n",
     "fix_stacks": "f",
     "clique_search_timeout": "l",
+    "print_PDB": "p",
     "help": "h"
 }
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--pdb-id")
-    parser.add_argument("--chain-id")
-    parser.add_argument("--pdb-id1")
-    parser.add_argument("--chain-id1")
-    parser.add_argument("--pdb-id2")
-    parser.add_argument("--chain-id2")
-    parser.add_argument("--non-rotated", action="store_true")
-    parser.add_argument("--preprocess", action="store_true")
-    parser.add_argument("--output")
-    parser.add_argument("--rmsd")
-    parser.add_argument("--minimum-stack-size")
+    parser.add_argument("--pdb-id", help="only for preprocess")
+    parser.add_argument("--chain-id", help="only for preprocess")
+    parser.add_argument("--pdb-id1", help="only for alignment")
+    parser.add_argument("--chain-id1", help="only for alignment")
+    parser.add_argument("--pdb-id2", help="only for alignment")
+    parser.add_argument("--chain-id2", help="only for alignment")
+    parser.add_argument("--non-rotated", action="store_true",
+                        help="when using non-rotated, LocalSTAR3D is used for alignment and the rotated match will not be output")
+    parser.add_argument("--preprocess", action="store_true",
+                        help="run preprocess automatically, including downloading PDB and base-pair annotation")
+    parser.add_argument("--output", help="specify the output alignment file")
+    parser.add_argument("--rmsd", help="rmsd cutoff for output alignments, default is 4 (Armstrong)")
+    parser.add_argument("--minimum-stack-size", help="the minimum conserved stack size, default is 3 (base-pair)")
     parser.add_argument("--gap-open-penalty")
     parser.add_argument("--gap-extension-penalty")
     parser.add_argument("--number-of-threads")
     parser.add_argument("--match-score")
     parser.add_argument("--mismatch-score")
-    parser.add_argument("--include-dangling-end")
-    parser.add_argument("--stack-distance-cutoff")
-    parser.add_argument("--number-of-alignments")
-    parser.add_argument("--fix-stacks")
+    parser.add_argument("--include-dangling-end",
+                        help="whether to include the dangling end in alignment, default is true")
+    parser.add_argument("--stack-distance-cutoff",
+                        help="the adjacency constrain between conserved stack pairs, default is 15 (nt)")
+    parser.add_argument("--number-of-alignments", help="the maximum number of alignment in output, default is 5")
+    parser.add_argument("--fix-stacks", help="tolerant 1nt gap in stack, default is true")
     parser.add_argument("--clique-search-timeout")
+    parser.add_argument("--print-PDB", help="output PDB for the number of top alignments, default is 0")
 
     args = parser.parse_args()
     jar = "LocalSTAR3D/LocalSTAR3D.jar" if args.non_rotated else "CircularSTAR3D/CircularSTAR3D.jar"

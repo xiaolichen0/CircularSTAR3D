@@ -45,6 +45,9 @@ Go to the CircularSTAR3D home directory and execute
 More options for the program can be seen by executing 
 "python3 run_circularSTAR3D.py -h"
 
+Use "--non-rotate" to generate local alignment from LocalSTAR3D  
+Use "--print-PDB n" to generate PDB for top n alignments  
+
 Notice: Make sure the folds "PDB", "STAR3D_struct_info" and the file "CircularSTAR3D.jar" 
 in the same directory. 
 
@@ -52,7 +55,8 @@ in the same directory.
 ```
 python3 run_circularSTAR3D.py --preprocess --pdb-id 3f2x --chain-id X
 python3 run_circularSTAR3D.py --preprocess --pdb-id 4frn --chain-id B
-python3 run_circularSTAR3D.py --minimum-stack-size 2 --pdb-id1 4frn --chain-id1 B --pdb-id2 3f2x --chain-id2 X
+python3 run_circularSTAR3D.py --print-PDB 1 --minimum-stack-size 2 --print-PDB 1 --pdb-id1 4frn --chain-id1 B --pdb-id2 3f2x --chain-id2 X
+python3 run_circularSTAR3D.py --non-rotate --print-PDB 1 --minimum-stack-size 2 --pdb-id1 4frn --chain-id1 B --pdb-id2 3f2x --chain-id2 X
 ```
 
 ### ACKNOWLEDGEMENTS
