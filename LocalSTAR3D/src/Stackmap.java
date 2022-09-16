@@ -9,8 +9,9 @@ public class Stackmap implements Comparable<Stackmap>{
 	public int compareTo(Stackmap o){
 		return this.rmsd-0.1*this.size > o.rmsd-0.1*o.size ? 1: (this.rmsd-0.1*this.size < o.rmsd-0.1*o.size ? -1:0);
 	}
-	
+
 	public String toString(){
-		return "("+this.i1+","+this.j1+")"+"<->("+this.i2+","+this.j2+"):"+this.size;
+		return "("+STAR3D.ResID1_list.get(this.i1)+","+STAR3D.ResID1_list.get(this.j1)+")"+"<->("+
+				STAR3D.ResID2_list.get(this.i2)+","+STAR3D.ResID2_list.get(this.j2)+"):"+this.size;
 	}
 }
