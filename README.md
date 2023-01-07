@@ -47,8 +47,7 @@ More options for the program can be seen by executing
 
 Use "--non-rotate" to generate local alignment from LocalSTAR3D.  
 Use "--print-PDB n" to generate PDB for top n alignments.  
-Use "--output-directory" to specify the output directory. The default directory is the root directory of CircularSTAR3D package.  
-Use "--output-prefix" to specify the output file prefix. For example, if the prefix is "4frn_B_3f2x_X", the output alignment file will be 4frn_B_3f2x_X.aln and the PDB file of the first alignment will be 4frn_B_3f2x_X.aln1.pdb. The default prefix is "output".  
+Use "--output-prefix" to specify the output file prefix. For example, if the prefix is "4frn_B_3f2x_X", the output alignment file will be 4frn_B_3f2x_X.aln and the PDB file of the first alignment will be 4frn_B_3f2x_X.aln1.pdb. The default prefix is "output". The users can add path string to the prefix. The output files will be in the CircularSTAR3D root directory by default.  
 
 Notice: Make sure the folds "PDB", "STAR3D_struct_info" and the file "CircularSTAR3D.jar" 
 in the same directory. 
