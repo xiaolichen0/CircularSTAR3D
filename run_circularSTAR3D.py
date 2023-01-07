@@ -48,7 +48,7 @@ def main():
     parser.add_argument("--fix-stacks", help="tolerant 1nt gap in stack, default is true")
     parser.add_argument("--clique-search-timeout")
     parser.add_argument("--print-PDB", help="output PDB for the number of top alignments, default is 0")
-    parser.add_argument("--output-prefix", help="the prefix of the output files, default is output")
+    parser.add_argument("--output-prefix", help="the prefix of the output files, default is \"output\"")
 
     args = parser.parse_args()
     jar = "LocalSTAR3D/LocalSTAR3D.jar" if args.non_rotated else "CircularSTAR3D/CircularSTAR3D.jar"
