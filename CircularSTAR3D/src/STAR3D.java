@@ -12,7 +12,8 @@ public class STAR3D{
 	/*
 	 * The global parameters.
 	 */
-	public static String output_fn="output.aln";
+	public static String output_prefix="output";
+	public static String output_fn = null;
 	public static int pdb_output=0;
 	public static double rmsd_cutoff=4.0;
 	public static int min_stack_size=3;
@@ -98,7 +99,7 @@ public class STAR3D{
 		String PDBID2 = cmd.getArgList().get(2).toString().toLowerCase();
 		String chainID2 = cmd.getArgList().get(3).toString();
 
-		if (cmd.getOptionValue("o") != null) STAR3D.output_fn = cmd.getOptionValue("o");
+		if (cmd.getOptionValue("o") != null) STAR3D.output_prefix = cmd.getOptionValue("o");
 		if (cmd.getOptionValue("r") != null) STAR3D.rmsd_cutoff = Double.parseDouble(cmd.getOptionValue("r"));
 		if (cmd.getOptionValue("s") != null) STAR3D.min_stack_size = Integer.parseInt(cmd.getOptionValue("s"));
 		if (cmd.getOptionValue("g") != null) STAR3D.gap_open_penalty = Double.parseDouble(cmd.getOptionValue("g"));
@@ -113,6 +114,8 @@ public class STAR3D{
 		if (cmd.getOptionValue("d") != null) STAR3D.no_dangle_end = Boolean.parseBoolean(cmd.getOptionValue("d"));
 		if (cmd.getOptionValue("l") != null) STAR3D.clique_time = Integer.parseInt(cmd.getOptionValue("l"));
 		if(cmd.getOptionValue("p") != null) STAR3D.pdb_output=Integer.parseInt(cmd.getOptionValue("p"));
+
+		output_fn = output_prefix + ".aln";
 
 		if (cmd.hasOption("d") == true) {STAR3D.no_dangle_end = true;}
 
@@ -667,9 +670,11 @@ public class STAR3D{
 					CommonOps.transpose(Atom_coord, Atom_coord_T);
 					CommonOps.mult(Map_R, Atom_coord_T, Atom_coord_R);
 
-					out.println("ATOM  " + String.format("%5d", A.sn) + " " + String.format("%-4s", A.atom) + " " + String.format("%3s", A.res.symbol) + " " +
-							"A" + String.format("%4d", A.res.rid.seqnum) + A.res.rid.icode + "   " +
-							String.format("%8.3f", Atom_coord_R.get(0, 0)) + String.format("%8.3f", Atom_coord_R.get(1, 0)) + String.format("%8.3f", Atom_coord_R.get(2, 0)) + "  1.00 99.99"
+					out.println("ATOM  " + String.format("%5d", A.sn) + " " + String.format("%-4s", A.atom) + " " +
+							String.format("%3s", A.res.symbol) + " " + chainID1 + String.format("%4d", A.res.rid.seqnum) +
+							A.res.rid.icode + "   " + String.format("%8.3f", Atom_coord_R.get(0, 0)) +
+							String.format("%8.3f", Atom_coord_R.get(1, 0)) +
+							String.format("%8.3f", Atom_coord_R.get(2, 0)) + "  1.00 99.99"
 					);
 				}
 				out.println("ENDMDL");
@@ -683,9 +688,11 @@ public class STAR3D{
 					Atom_coord.set(0, 2, A.coord.z);
 					Atom_coord = Geom.translation(Atom_coord, Map2_YC);
 
-					out.println("ATOM  " + String.format("%5d", A.sn) + " " + String.format("%-4s", A.atom) + " " + String.format("%3s", A.res.symbol) + " " +
-							"B" + String.format("%4d", A.res.rid.seqnum) + A.res.rid.icode + "   " +
-							String.format("%8.3f", Atom_coord.get(0, 0)) + String.format("%8.3f", Atom_coord.get(0, 1)) + String.format("%8.3f", Atom_coord.get(0, 2)) + "  1.00 99.99"
+					out.println("ATOM  " + String.format("%5d", A.sn) + " " + String.format("%-4s", A.atom) + " " +
+							String.format("%3s", A.res.symbol) + " " + chainID2 + String.format("%4d", A.res.rid.seqnum) +
+							A.res.rid.icode + "   " + String.format("%8.3f", Atom_coord.get(0, 0)) +
+							String.format("%8.3f", Atom_coord.get(0, 1)) +
+							String.format("%8.3f", Atom_coord.get(0, 2)) + "  1.00 99.99"
 					);
 				}
 
