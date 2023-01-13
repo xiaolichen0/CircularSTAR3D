@@ -18,13 +18,7 @@ matrix computation. The two jar files have been already included into the packag
 Apache ant: http://ant.apache.org/bindownload.cgi 
 For Linux system, ant can be installed directly by using command line.
 Debian/Ubuntu: "apt-get install ant"
-Fedora/CentOS: "yum install ant"
-
-CircularSTAR3D extracts base-pair information from DSSR's annotations. The DSSR annotation files that were used to generate the results in our manuscript are provided along with CircularSTAR3D package. There are two ways for users to use DSSR for their PDB files.
-1. If you have DSSR software, copy DSSR into CircularSTAR3D/tools/. After that, you will have CircularSTAR3D/tools/DSSR/x3dna-dssr.
-2. If you don't have DSSR software, you can copy DSSR annotation files for your PDBs into CircularSTAR3D/STAR3D_struct_info/.
-   For example, if you want to preprocess PDB 6d90, you can copy your 6d90.dssr file into CircularSTAR3D/STAR3D_struct_info/.
-   
+Fedora/CentOS: "yum install ant"   
 
 ### Installation
 In home directory
@@ -38,6 +32,13 @@ Go to the home directory and execute
 "python3 run_circularSTAR3D.py --preprocess --pdb-id [PDB ID] --chain-id [CHAIN ID]".
 
 If you want to use your custom PDB files, copy them into CircularSTAR3D/PDB/ or LocalSTAR3D/PDB/ before running the preprocess command. CircularSTAR3D will skip downloading from PDB website if the PDB files present in the PDB folder. Please use suffix ".pdb" for PDB format and suffix ".cif" for PDBx/mmcif format files.    
+
+CircularSTAR3D extracts base-pair information from DSSR's annotations. The DSSR annotation files that were used to generate the results in our manuscript are provided along with CircularSTAR3D package. There are two ways for users to use DSSR for their PDB files.
+1. If you have DSSR software, copy DSSR into CircularSTAR3D/tools/. After that, you will have CircularSTAR3D/tools/DSSR/x3dna-dssr.
+2. If you don't have DSSR software, you can copy DSSR annotation files for your PDBs into CircularSTAR3D/STAR3D_struct_info/.
+   For example, if you want to preprocess PDB 6d90, you can copy your 6d90.dssr file into CircularSTAR3D/STAR3D_struct_info/. 
+   
+The DSSR annotation files can be downloaded from http://skmatic.x3dna.org/, where you can specifiy the PDB ID if it is in PDB database or upload the PDB file to run DSSR webserver. Then copy the content in "DSSR-derived features in text format" into a file in CircularSTAR3D/STAR3D_struct_info with file name "PDB_ID.dssr", replace PDB_ID with the PDB ID that you use to run CircularSTAR3D.
 
 Notice: Make sure the fold "tools" and file "CircularSTAR3D.jar" in the same directory. If you see "Exception in thread "main" java.lang.UnsupportedClassVersionError", try to delete the files in class/ folder and run "ant jar".
 
