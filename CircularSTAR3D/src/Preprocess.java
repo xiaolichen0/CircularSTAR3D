@@ -27,6 +27,7 @@ public class Preprocess {
 		String STAR3D_PATH = new File(Preprocess.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParentFile().getPath();
 
 		System.out.println(STAR3D_PATH);
+
 		File PDB_DATA_PATH=new File(STAR3D_PATH, "PDB");
 		File SI_DATA_PATH=new File(STAR3D_PATH, "STAR3D_struct_info");
 
@@ -117,12 +118,16 @@ public class Preprocess {
 			System.out.println("Using existing DSSR annotation files");
 		} else {
 			try {
+				Process p = null;
 				if (pdb_type == 1) {
 					System.out.println("Processing " + PDBID + ".cif with DSSR...");
+					p = Runtime.getRuntime().exec(new File(STAR3D_PATH, "tools/DSSR/x3dna-dssr").toString() + " --nested -i=" + PDBx_fn);
 				}
-				if (pdb_type == 0)
+				if (pdb_type == 0) {
 					System.out.println("Processing " + PDBID + ".pdb with DSSR...");
-				Process p = Runtime.getRuntime().exec(new File(STAR3D_PATH, "tools/DSSR/x3dna-dssr").toString() + " --nested -i=" + PDB_fn);
+					p = Runtime.getRuntime().exec(new File(STAR3D_PATH, "tools/DSSR/x3dna-dssr").toString() + " --nested -i=" + PDB_fn);
+				}
+
 				BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
 				PrintWriter out = new PrintWriter(anno_file);
 				String line;
