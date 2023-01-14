@@ -20,7 +20,7 @@ For Linux system, ant can be installed directly by using command line.
 Debian/Ubuntu: "apt-get install ant"
 Fedora/CentOS: "yum install ant"
 
-CircularSTAR3D extracts base-pair information from DSSR's annotations. There are two ways for users to use DSSR.
+CircularSTAR3D extracts base-pair information from DSSR's annotations. CircularSTAR3D has been tested with DSSR basic version 1.5.3 and 2.3.2. There are two ways for users to use DSSR.
 1. If you have DSSR software, copy DSSR into CircularSTAR3D/tools/. After that, you will have CircularSTAR3D/tools/DSSR/x3dna-dssr.
 2. If you don't have DSSR software, you can copy DSSR annotation files for your PDBs into CircularSTAR3D/STAR3D_struct_info/.
    For example, if you want to preprocess PDB 6d90, you can copy your 6d90.dssr file into CircularSTAR3D/STAR3D_struct_info/.
