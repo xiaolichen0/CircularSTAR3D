@@ -24,8 +24,6 @@ public class DSSR {
 
     ResID parse_dssr_index (String DSSR_res_index){
 
-        //System.out.println(DSSR_res_index);
-
         int p = DSSR_res_index.indexOf('.'),
                 p1 = DSSR_res_index.indexOf(':'),
                 c = DSSR_res_index.indexOf('^'),
@@ -40,8 +38,6 @@ public class DSSR {
             String seqnum = index1[1];
             char icode = ((c == -1) ? ' ' : DSSR_res_index.charAt(len-1));
 
-            //System.out.println(chain + " " + seqnum + " " + icode);
-
             return new ResID(chain, Integer.parseInt(seqnum), icode);
         } else {
 
@@ -49,16 +45,11 @@ public class DSSR {
             int modBaseLen = curr_mod_base.length(),
                     modBaseEnd = DSSR_res_index.indexOf(curr_mod_base) + modBaseLen - 1;
 
-            //System.out.println("" + modBaseEnd);
-            //System.out.println("charAt(" + (modBaseLen + 1) + ")="
-            //	+ DSSR_res_index.charAt(modBaseLen + 1));
             if(DSSR_res_index.charAt(modBaseEnd + 1) == '/') modBaseEnd++;
 
             String chain = DSSR_res_index.substring(0, p);
             String seqnum = DSSR_res_index.substring(modBaseEnd + 1, ((c == -1) ? len : c));
             char icode = ((c == -1) ? ' ' : DSSR_res_index.charAt(len-1));
-
-            //System.out.println(chain + " " + seqnum + " " + icode);
 
             return new ResID(chain, Integer.parseInt(seqnum), icode);
         }
@@ -91,8 +82,10 @@ public class DSSR {
         String Saenger = token[5];
         String lw = token[6];
 
-        char e1, e2, o;
+        if (lw.equals("--"))
+            return new Pair<ResID, String>(R1, R2, "--h");
 
+        char e1, e2, o;
         e1=lw.charAt(1);
         e2=lw.charAt(2);
         o = lw.charAt(0);
@@ -125,7 +118,6 @@ public class DSSR {
             if(!readModBases && line.trim().matches("List of [\\d]+ type[s]? of [\\d]+ modified nucleotide[s]?")) {
                 in.readLine(); line = in.readLine();
                 while(!line.isEmpty()) {
-                    //System.out.println("readModBases line=" + line);
                     parseModifiedBase(line);
                     line = in.readLine();
                 }

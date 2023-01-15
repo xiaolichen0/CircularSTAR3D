@@ -640,8 +640,8 @@ public class STAR3D{
 			out.println(String.format("#Alignment score: %.2f", cur_aln.score));
 			out.println(String.format("#Aligned nucleotide: %d", cur_aln.rna1_index.size()));
 			out.println(String.format("#Alignment RMSD: %.2fA", cur_aln.rmsd));
-			for(Integer i1 : cur_aln.aligned_stack)
-				out.println(SM_top.get(i1));
+//			for(Integer i1 : cur_aln.aligned_stack)
+//				out.println(SM_top.get(i1));
 			out.println("#Nucleotide mapping:");
 			for(int nt_index =0; nt_index < cur_aln.rna1_index.size();nt_index++) {
 				out.println(ResID1_list.get(cur_aln.rna1_index.get(nt_index))+"<->"+ResID2_list.get(cur_aln.rna2_index.get(nt_index)));

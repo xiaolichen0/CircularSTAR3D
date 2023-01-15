@@ -66,10 +66,12 @@ public class DSSR {
         String Saenger = token[5];
         String lw = token[6];
 
-        char e1, e2, o;
+        if (lw.equals("--"))
+            return new Pair<ResID, String>(R1, R2, "--h");
 
-        e1=lw.charAt(1);
-        e2=lw.charAt(2);
+        char e1, e2, o;
+        e1 = lw.charAt(1);
+        e2 = lw.charAt(2);
         o = lw.charAt(0);
         if ((e1=='W' || e1=='S' || e1=='H') && (e2=='W' || e2=='S' || e2=='H')){
             if (!name.equals("--"))
@@ -109,7 +111,7 @@ public class DSSR {
                 in.readLine(); line = in.readLine();
                 while(!line.isEmpty()) {
                     Pair<ResID, String> BP = parse_DSSR_BP_info(line);
-                    if(BP != null) basepair.add(BP);
+                    if (BP != null) basepair.add(BP);
                     line = in.readLine();
                 }
             }
@@ -124,7 +126,11 @@ public class DSSR {
                     for(String s : strlist){
                         intlist.add(Integer.valueOf(s));
                     }
-                    line = in.readLine();
+
+                    line = in.readLine().trim();
+
+                    if(line.startsWith("summary:"))
+                        line = in.readLine();
 
                     boolean wrong_chain = false;//7_28
 
@@ -170,7 +176,10 @@ public class DSSR {
                     for(String s : strlist){
                         intlist.add(Integer.valueOf(s));
                     }
-                    line = in.readLine();
+
+                    line = in.readLine().trim();
+                    if(line.startsWith("summary:"))
+                        line = in.readLine();
 
                     boolean wrong_chain = false;//7_28
 

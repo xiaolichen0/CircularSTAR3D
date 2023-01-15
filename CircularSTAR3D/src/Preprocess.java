@@ -26,6 +26,7 @@ public class Preprocess {
 		//get the path STAR3D.jar
 		String STAR3D_PATH = new File(Preprocess.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParentFile().getPath();
 
+		STAR3D_PATH = STAR3D_PATH + "/CircularSTAR3D";
 		System.out.println(STAR3D_PATH);
 
 		File PDB_DATA_PATH=new File(STAR3D_PATH, "PDB");
@@ -185,6 +186,7 @@ public class Preprocess {
 			int num_WC=0;
 			List<Pair<Integer, String>> to_rm = new ArrayList<>();
 			Set<Integer> paired_nt = new HashSet<>();
+
 			for(Pair<Integer, String> P : chain_bp){
 				if(P.v.equals("WWc")){
 					if((Integer)m[P.left][4]!=0) multi_pair.add(P.left);
@@ -192,7 +194,6 @@ public class Preprocess {
 					if((Integer)m[P.right][4]!=0) multi_pair.add(P.right);
 					m[P.right][4]=P.left+1;
 					num_WC+=1;
-
 					paired_nt.add(P.left);
 					paired_nt.add(P.right);
 					to_rm.add(P);
@@ -212,7 +213,6 @@ public class Preprocess {
 						multi_pair.add(P.right);
 					else
 						m[P.right][4]=P.left+1;
-
 					paired_nt.add(P.left);
 					paired_nt.add(P.right);
 					to_rm.add(P);

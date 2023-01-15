@@ -12,7 +12,7 @@ public class Snode {
 	public void show(int lvl) {
 		String head = "";
 		for (int i = 0; i < lvl; i++) head += "+";
-		System.out.println(head + stack);
+//		System.out.println(head + stack);
 		for (Snode SN : children) SN.show(lvl + 1);
 	}
 

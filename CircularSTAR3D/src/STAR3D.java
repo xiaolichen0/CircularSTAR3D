@@ -568,10 +568,6 @@ public class STAR3D{
 					Map2_loop.add(cur_loop2);
 				}
 
-				//assertion
-//				if(!stack_stand_to_loop1.keySet().contains(new Pair<Pair<Integer,Integer>,Integer>(Map1_stack_strand.get(Map1_stack_strand.size()-1), Map1_stack_strand.get(0), 0)))
-//					System.out.println("error");
-
 				// add the loop between last and first stackmap
 				Pair<Integer,Integer> first_strand1 = Map1_stack_strand.get(0);
 				Pair<Integer,Integer> last_strand1 =  Map1_stack_strand.get(Map1_stack_strand.size()-1);

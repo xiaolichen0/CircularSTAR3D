@@ -759,8 +759,8 @@ public class Lib {
 				out.print(in + " ");
 			out.println();
 
-			for(Integer i1 : cur_aln.aligned_stack)
-				out.println(STAR3D.SM_top.get(i1));
+//			for(Integer i1 : cur_aln.aligned_stack)
+//				out.println(STAR3D.SM_top.get(i1));
 
 			out.println("#Nucleotide mapping:");
 			for(int nt_index =0; nt_index < cur_aln.rna1_index.size();nt_index++) {
