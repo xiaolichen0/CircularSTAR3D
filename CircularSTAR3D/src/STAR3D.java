@@ -120,10 +120,11 @@ public class STAR3D{
 		if (cmd.hasOption("d") == true) {STAR3D.no_dangle_end = true;}
 
 		String STAR3D_PATH = new File(STAR3D.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParentFile().getPath();
-		System.out.println(STAR3D_PATH);
+		String ROOT_PATH = new File(STAR3D_PATH).getParentFile().getPath();
 
-		File PDB_DATA_PATH = new File(STAR3D_PATH, "PDB");
-		File SI_DATA_PATH = new File(STAR3D_PATH, "STAR3D_struct_info");
+		File PDB_DATA_PATH=new File(ROOT_PATH, "PDB");
+		File DSSR_ANNO_PATH=new File(ROOT_PATH, "DSSR_annotation");
+		File SI_DATA_PATH=new File(STAR3D_PATH, "STAR3D_struct_info");
 
 		//parse the PDB file
 		File PDB1_fn = new File(PDB_DATA_PATH, PDBID1 + ".pdb");
@@ -170,8 +171,8 @@ public class STAR3D{
 		DSSR DSSR1_parser, DSSR2_parser;
 		HashSet<Pair<Integer, String>> bp1, bp2;
 
-		anno1_file = new File(SI_DATA_PATH, PDBID1 + ".dssr");
-		anno2_file = new File(SI_DATA_PATH, PDBID2 + ".dssr");
+		anno1_file = new File(DSSR_ANNO_PATH, PDBID1 + ".dssr");
+		anno2_file = new File(DSSR_ANNO_PATH, PDBID2 + ".dssr");
 
 		DSSR1_parser = new DSSR(anno1_file, chainID1);
 		DSSR2_parser = new DSSR(anno2_file, chainID2);

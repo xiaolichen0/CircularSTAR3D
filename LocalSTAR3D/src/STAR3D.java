@@ -13,7 +13,8 @@ public class STAR3D{
 	/*
 	 * The global parameters.
 	 */
-	public static String output_fn="output.aln";
+	public static String output_prefix="output";
+	public static String output_fn = null;
 	public static int pdb_output=0;
 	public static double rmsd_cutoff=4.0;
 	public static int min_stack_size=3;
@@ -94,7 +95,7 @@ public class STAR3D{
 		String PDBID2 = cmd.getArgList().get(2).toString().toLowerCase();
 		String chainID2 = cmd.getArgList().get(3).toString();
 
-		if (cmd.getOptionValue("o") != null) STAR3D.output_fn = cmd.getOptionValue("o");
+		if (cmd.getOptionValue("o") != null) STAR3D.output_prefix = cmd.getOptionValue("o");
 		if (cmd.getOptionValue("r") != null) STAR3D.rmsd_cutoff = Double.parseDouble(cmd.getOptionValue("r"));
 		if (cmd.getOptionValue("s") != null) STAR3D.min_stack_size = Integer.parseInt(cmd.getOptionValue("s"));
 		if (cmd.getOptionValue("g") != null) STAR3D.gap_open_penalty = Double.parseDouble(cmd.getOptionValue("g"));
@@ -113,13 +114,14 @@ public class STAR3D{
 		 * Parse MCA files
 		 */
 
-		//String STAR3D_PATH = new File(STAR3D.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getPath();
-		//System.out.println(STAR3D_PATH);
+		output_fn = output_prefix + ".aln";
+
 		String STAR3D_PATH = new File(STAR3D.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParentFile().getPath();
+		String ROOT_PATH = new File(STAR3D_PATH).getParentFile().getPath();
 
-		File PDB_DATA_PATH = new File(STAR3D_PATH, "PDB");
-		File SI_DATA_PATH = new File(STAR3D_PATH, "STAR3D_struct_info");
-
+		File PDB_DATA_PATH=new File(ROOT_PATH, "PDB");
+		File DSSR_ANNO_PATH=new File(ROOT_PATH, "DSSR_annotation");
+		File SI_DATA_PATH=new File(STAR3D_PATH, "STAR3D_struct_info");
 //parse the PDB file
 		File PDB1_fn = new File(PDB_DATA_PATH, PDBID1 + ".pdb");
 		File PDB2_fn = new File(PDB_DATA_PATH, PDBID2 + ".pdb");
@@ -169,8 +171,8 @@ public class STAR3D{
 		DSSR DSSR1_parser = null, DSSR2_parser = null;
 		HashSet<Pair<Integer, String>> bp1 = null, bp2 = null;
 
-		anno1_file = new File(SI_DATA_PATH, PDBID1 + ".dssr");
-		anno2_file = new File(SI_DATA_PATH, PDBID2 + ".dssr");
+		anno1_file = new File(DSSR_ANNO_PATH, PDBID1 + ".dssr");
+		anno2_file = new File(DSSR_ANNO_PATH, PDBID2 + ".dssr");
 
 //		System.out.println(SI_DATA_PATH +"/"+ PDBID1 + ".dssr");
 

@@ -25,11 +25,14 @@ public class Preprocess {
 
         //get the path STAR3D.jar
         String STAR3D_PATH = new File(Preprocess.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParentFile().getPath();
+        String ROOT_PATH = new File(STAR3D_PATH).getParentFile().getPath();
 
-        File PDB_DATA_PATH=new File(STAR3D_PATH, "PDB");
+        File PDB_DATA_PATH=new File(ROOT_PATH, "PDB");
+        File DSSR_ANNO_PATH=new File(ROOT_PATH, "DSSR_annotation");
         File SI_DATA_PATH=new File(STAR3D_PATH, "STAR3D_struct_info");
 
         if(!(PDB_DATA_PATH.exists() && PDB_DATA_PATH.isDirectory())) PDB_DATA_PATH.mkdir();
+        if(!(DSSR_ANNO_PATH.exists() && DSSR_ANNO_PATH.isDirectory())) DSSR_ANNO_PATH.mkdir();
         if(!(SI_DATA_PATH.exists() && SI_DATA_PATH.isDirectory())) SI_DATA_PATH.mkdir();
 
         PDBID=PDBID.toLowerCase();
@@ -90,7 +93,7 @@ public class Preprocess {
 
         File anno_file = null;
 
-        anno_file = new File(SI_DATA_PATH, PDBID + ".dssr");
+        anno_file = new File(DSSR_ANNO_PATH, PDBID + ".dssr");
         File DSSR_exe_file = new File("tools/DSSR/x3dna-dssr\"");
 
         if(anno_file.exists() && anno_file.length() >= 0){
