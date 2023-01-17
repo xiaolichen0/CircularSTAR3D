@@ -42,7 +42,7 @@ Notice: Make sure the fold "tools" and file "CircularSTAR3D.jar" in the same dir
 
 ### Structural Alignment
 Go to the CircularSTAR3D home directory and execute 
-"python3 run_circularSTAR3D.py [options]"
+"python3 run_circularSTAR3D.py [options]"  
 More options for the program can be seen by executing 
 "python3 run_circularSTAR3D.py -h"
 
