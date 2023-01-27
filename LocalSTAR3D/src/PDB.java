@@ -29,6 +29,8 @@ public class PDB implements PDBParser {
 		int sn=0;
 		String symbol;
 		double x=0., y=0., z=0.;
+		float occupancy=1;
+		float B_iso_or_equiv=99;
 		String atom;
 		ResID rid;
 		ResID cur_rid=new ResID(null, -1, '\0');	//set current resid to null
@@ -52,6 +54,9 @@ public class PDB implements PDBParser {
 				x=Double.valueOf(line.substring(30, 38).trim());
 				y=Double.valueOf(line.substring(38, 46).trim());
 				z=Double.valueOf(line.substring(46, 54).trim());
+
+				occupancy=Float.valueOf(line.substring(56, 61).trim());
+				B_iso_or_equiv=Float.valueOf(line.substring(61, 70).trim());
 				
 				rid=new ResID(chainID, seqnum, icode);
 				
@@ -59,7 +64,7 @@ public class PDB implements PDBParser {
 					chain_res.get(chainID).add(new Residue(rid, symbol));
 					cur_rid=rid;
 				}
-				chain_atom.get(chainID).add(new Atom(sn, new Residue(cur_rid, symbol), atom, new Point(x, y, z)));	//add the new atom
+				chain_atom.get(chainID).add(new Atom(sn, new Residue(cur_rid, symbol), atom, new Point(x, y, z), occupancy, B_iso_or_equiv));	//add the new atom
 			}
 		}
 		in.close();

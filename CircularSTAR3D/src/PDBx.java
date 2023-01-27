@@ -14,12 +14,14 @@ public class PDBx extends PDBParser{
         int seqnum = 0, sn = 0;
         String symbol = null;
         double x = 0, y = 0, z = 0;
+        float occupancy=1;
+        float B_iso_or_equiv=99;
         String atom = null;
         Residue rid;
 
         String line;
         int symbol_index = -1, chain_index = -1, label_seqnum_index = -1, auth_seqnum_index = -1, atom_index = -1, sn_index = -1,
-                x_index = -1, y_index = -1, z_index = -1, icode_index = -1;
+                x_index = -1, y_index = -1, z_index = -1, icode_index = -1, occupancy_index = -1, B_iso_or_equiv_index = -1;
         boolean parsedAtomItems = false;
 
         while((line = in.readLine()) != null) {
@@ -40,9 +42,11 @@ public class PDBx extends PDBParser{
                 y_index = items.indexOf("_atom_site.Cartn_y");
                 z_index = items.indexOf("_atom_site.Cartn_z");
                 icode_index = items.indexOf("_atom_site.pdbx_PDB_ins_code");
+                occupancy_index = items.indexOf("_atom_site.occupancy");
+                B_iso_or_equiv_index = items.indexOf("_atom_site.B_iso_or_equiv");
 
                 if(symbol_index == -1 || chain_index == -1 || label_seqnum_index == -1 || auth_seqnum_index == -1 || atom_index == -1 || sn_index == -1 ||
-                        x_index == -1 || y_index == -1 || z_index == -1 || icode_index == -1) {
+                        x_index == -1 || y_index == -1 || z_index == -1 || icode_index == -1 || occupancy_index == -1 || B_iso_or_equiv_index == -1) {
                     System.err.println("The mmCIF structure does not have all the necessary _atom_site attributes.");
                     return;
                 }
@@ -74,6 +78,9 @@ public class PDBx extends PDBParser{
                 if(y_index != -1) y = Double.valueOf(token[y_index]);
                 if(z_index != -1) z = Double.valueOf(token[z_index]);
 
+                if(occupancy_index != -1) occupancy = Float.valueOf(token[occupancy_index]);
+                if(B_iso_or_equiv_index != -1) B_iso_or_equiv = Float.valueOf(token[B_iso_or_equiv_index]);
+
                 if(icode_index != -1) {
                     if(!token[icode_index].equals("?"))
                         icode = token[icode_index].charAt(0);
@@ -97,7 +104,7 @@ public class PDBx extends PDBParser{
                     chain_res.get(chain).add(rid);
                 }
 
-                chain_atom.get(chain).add(new Atom(sn, rid, atom, new Point(x, y, z)));
+                chain_atom.get(chain).add(new Atom(sn, rid, atom, new Point(x, y, z), occupancy, B_iso_or_equiv));
             }
         }
         in.close();

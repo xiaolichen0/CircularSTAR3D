@@ -27,12 +27,14 @@ public class PDBx implements PDBParser{
         int seqnum = 0, sn = 0;
         String symbol = null;
         double x = 0, y = 0, z = 0;
+        float occupancy=1;
+        float B_iso_or_equiv=99;
         String atom = null;
         Residue rid;
 
         String line;
         int symbol_index = -1, chain_index = -1, label_seqnum_index = -1, auth_seqnum_index = -1, atom_index = -1, sn_index = -1,
-                x_index = -1, y_index = -1, z_index = -1, icode_index = -1;
+                x_index = -1, y_index = -1, z_index = -1, icode_index = -1, occupancy_index = -1, B_iso_or_equiv_index = -1;
         boolean parsedAtomItems = false;
 
         int ctr = 0;
@@ -47,8 +49,6 @@ public class PDBx implements PDBParser{
                     line = in.readLine();
                 }
 
-
-
                 symbol_index = items.indexOf("_atom_site.label_comp_id");
                 chain_index = items.indexOf("_atom_site.auth_asym_id");
                 label_seqnum_index = items.indexOf("_atom_site.label_seq_id");
@@ -60,8 +60,11 @@ public class PDBx implements PDBParser{
                 z_index = items.indexOf("_atom_site.Cartn_z");
                 icode_index = items.indexOf("_atom_site.pdbx_PDB_ins_code");
 
+                occupancy_index = items.indexOf("_atom_site.occupancy");
+                B_iso_or_equiv_index = items.indexOf("_atom_site.B_iso_or_equiv");
+
                 if(symbol_index == -1 || chain_index == -1 || label_seqnum_index == -1 || auth_seqnum_index == -1 || atom_index == -1 || sn_index == -1 ||
-                        x_index == -1 || y_index == -1 || z_index == -1 || icode_index == -1) {
+                        x_index == -1 || y_index == -1 || z_index == -1 || icode_index == -1 || occupancy_index == -1 || B_iso_or_equiv_index == -1) {
                     System.err.println("The mmCIF structure does not have all the necessary _atom_site attributes.");
                     return;
                 }
@@ -93,6 +96,9 @@ public class PDBx implements PDBParser{
                 if(y_index != -1) y = Double.valueOf(token[y_index]);
                 if(z_index != -1) z = Double.valueOf(token[z_index]);
 
+                if(occupancy_index != -1) occupancy = Float.valueOf(token[occupancy_index]);
+                if(B_iso_or_equiv_index != -1) B_iso_or_equiv = Float.valueOf(token[B_iso_or_equiv_index]);
+
                 if(icode_index != -1) {
                     if(!token[icode_index].equals("?"))
                         icode = token[icode_index].charAt(0);
@@ -119,7 +125,7 @@ public class PDBx implements PDBParser{
                     chain_res.get(chain).add(rid);
                 }
 
-                chain_atom.get(chain).add(new Atom(sn, rid, atom, new Point(x, y, z)));
+                chain_atom.get(chain).add(new Atom(sn, rid, atom, new Point(x, y, z), occupancy, B_iso_or_equiv));
             }
         }
         in.close();
@@ -138,39 +144,25 @@ public class PDBx implements PDBParser{
         return seq;
     }
 
-    public ArrayList<Point> get_chain_centroid(String chainID){
+    public ArrayList<Point> get_chain_centroid(String chainID) {
         ArrayList<ArrayList<Point>> coord = new ArrayList<ArrayList<Point>>();
         ArrayList<Point> centroid = new ArrayList<Point>();
 
-        ResID cur_rid=new ResID(null, -1, '\0');
+        ResID cur_rid = new ResID(null, -1, '\0');
 
-        for(Atom A: chain_atom.get(chainID)){
-            if (A.res.rid.equals(cur_rid)==false) {coord.add(new ArrayList<Point>());  cur_rid=A.res.rid;};
-            if (Reijmers_atoms.contains(A.atom)) coord.get(coord.size()-1).add(A.coord);
+        for (Atom A : chain_atom.get(chainID)) {
+            if (A.res.rid.equals(cur_rid) == false) {
+                coord.add(new ArrayList<Point>());
+                cur_rid = A.res.rid;
+            }
+            ;
+            if (Reijmers_atoms.contains(A.atom)) coord.get(coord.size() - 1).add(A.coord);
         }
 
-        for(ArrayList<Point> L: coord){
+        for (ArrayList<Point> L : coord) {
             centroid.add(Geom.centroid(L));
         }
 
         return centroid;
     }
-
-//    public static void main(String[] args) throws Exception{
-//        PDBx pdb=new PDBx(new File("/home/xiaoli/software/ori_star/STAR3D_source/pdbx/4xej.cif"), "AIRE");
-//        //for(Atom A: pdb.chain_atom.get('A')) System.out.println(A);
-//    }
-
-    public static void main(String args[]) throws Exception{
-        PDBx pdb=new PDBx(new File("/home/xiaoli/software/ori_star/STAR3D_source/pdbx/4xej.cif"), "AIRE");
-        for(Residue A: pdb.chain_res.get("AIRE")) System.out.println(A);
-
-//        File fname = new File("/opt/lampp/htdocs/WebSTAR3D/STAR3D_source/PDB/1y0q.cif");
-//        try {
-//            new PDBx(fname);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-    }
-
 }

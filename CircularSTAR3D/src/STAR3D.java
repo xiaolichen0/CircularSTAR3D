@@ -651,13 +651,13 @@ public class STAR3D{
 				Aln cur_aln = Alns_copy.poll();
 				Lib.get_matrices(cur_aln.rna1_index, cur_aln.rna2_index, Map1_XC, Map2_YC, Map_R);
 
-				PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(STAR3D.output_fn + Integer.toString(i+1) + ".pdb")));
+				PrintWriter PDBout = new PrintWriter(new BufferedWriter(new FileWriter(STAR3D.output_fn + Integer.toString(i+1) + ".pdb")));
 				DenseMatrix64F Atom_coord = new DenseMatrix64F(1, 3);
 				DenseMatrix64F Atom_coord_T = new DenseMatrix64F(3, 1);
 				DenseMatrix64F Atom_coord_R = new DenseMatrix64F(3, 1);
 
-				out.println("MODEL        1");
-				for (Atom A : PDB1_parser.get_chain_atom().get(""+chainID1.charAt(0))) {
+				PDBout.println("MODEL        1");
+				for (Atom A : PDB1_parser.get_chain_atom().get(chainID1)) {
 					if(!cur_aln.rna1_index.contains(ResID_to_star3d_index1.get(A.res.rid.seqnum)))
 						continue;
 					Atom_coord.set(0, 0, A.coord.x);
@@ -668,17 +668,19 @@ public class STAR3D{
 					CommonOps.transpose(Atom_coord, Atom_coord_T);
 					CommonOps.mult(Map_R, Atom_coord_T, Atom_coord_R);
 
-					out.println("ATOM  " + String.format("%5d", A.sn) + " " + String.format("%-4s", A.atom) + " " +
+					PDBout.println("ATOM " + String.format("%6d", A.sn) + " " + String.format("%-4s", A.atom) + " " +
 							String.format("%3s", A.res.symbol) + " " + chainID1 + String.format("%4d", A.res.rid.seqnum) +
 							A.res.rid.icode + "   " + String.format("%8.3f", Atom_coord_R.get(0, 0)) +
 							String.format("%8.3f", Atom_coord_R.get(1, 0)) +
-							String.format("%8.3f", Atom_coord_R.get(2, 0)) + "  1.00 99.99"
+							String.format("%8.3f", Atom_coord_R.get(2, 0)) +
+							String.format("%6.2f", A.occupancy) +
+							String.format("%6.2f", A.B_iso_or_equiv)
 					);
 				}
-				out.println("ENDMDL");
+				PDBout.println("ENDMDL");
 
-				out.println("MODEL        2");
-				for (Atom A : PDB2_parser.get_chain_atom().get(""+chainID2.charAt(0))) {
+				PDBout.println("MODEL        2");
+				for (Atom A : PDB2_parser.get_chain_atom().get(chainID2)) {
 					if(!cur_aln.rna2_index.contains(ResID_to_star3d_index2.get(A.res.rid.seqnum)))
 						continue;
 					Atom_coord.set(0, 0, A.coord.x);
@@ -686,17 +688,18 @@ public class STAR3D{
 					Atom_coord.set(0, 2, A.coord.z);
 					Atom_coord = Geom.translation(Atom_coord, Map2_YC);
 
-					out.println("ATOM  " + String.format("%5d", A.sn) + " " + String.format("%-4s", A.atom) + " " +
+					PDBout.println("ATOM " + String.format("%6d", A.sn) + " " + String.format("%-4s", A.atom) + " " +
 							String.format("%3s", A.res.symbol) + " " + chainID2 + String.format("%4d", A.res.rid.seqnum) +
 							A.res.rid.icode + "   " + String.format("%8.3f", Atom_coord.get(0, 0)) +
 							String.format("%8.3f", Atom_coord.get(0, 1)) +
-							String.format("%8.3f", Atom_coord.get(0, 2)) + "  1.00 99.99"
+							String.format("%8.3f", Atom_coord.get(0, 2)) +
+							String.format("%6.2f", A.occupancy) +
+							String.format("%6.2f", A.B_iso_or_equiv)
 					);
 				}
 
-				out.println("ENDMDL");
-
-				out.close();
+				PDBout.println("ENDMDL");
+				PDBout.close();
 			}
 		}
 
