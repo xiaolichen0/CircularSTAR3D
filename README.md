@@ -31,7 +31,7 @@ secondary structural information.
 Go to the home directory and execute 
 "python3 run_circularSTAR3D.py --preprocess --pdb-id [PDB ID] --chain-id [CHAIN ID]".
 
-If you want to use your custom PDB files, copy them into CircularSTAR3D/PDB/ or LocalSTAR3D/PDB/ before running the preprocess command. CircularSTAR3D will skip downloading from PDB website if the PDB files present in the PDB folder. Please use suffix ".pdb" for PDB format and suffix ".cif" for PDBx/mmcif format files.    
+If you want to use your custom PDB files, copy them into PDB/ before running the preprocess command. CircularSTAR3D will skip downloading from PDB website if the PDB files present in the PDB folder. Please use suffix ".pdb" for PDB format and suffix ".cif" for PDBx/mmcif format files.    
 
 CircularSTAR3D extracts base-pair information from DSSR's annotations. The DSSR annotation files that were used to generate the results in our manuscript are provided along with CircularSTAR3D package. There are two ways for users to use DSSR for their PDB files.
 1. If you have DSSR software, copy DSSR into CircularSTAR3D/tools/. After that, you will have CircularSTAR3D/tools/DSSR/x3dna-dssr.
