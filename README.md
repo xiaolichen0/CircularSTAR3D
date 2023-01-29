@@ -51,6 +51,11 @@ Use "--print-PDB n" to generate PDB for top n alignments. The output PDB files w
 Notice: Make sure the folds "PDB", "STAR3D_struct_info" and the file "CircularSTAR3D.jar" 
 in the same directory. 
 
+### Output files  
+The alignment output files have the suffix "aln". It includes the key parameters that are used to run CircularSTAR3D and the sorted local alignments. The format of the nucleotide mapping is "RNA1_chain_id:RNA1_nucleotide_id<->RNA2_chain_id:RNA2_nucleotide_id".  
+
+The PDB output files have the suffix "pdb". They are in PDB format [an introduction of PDB format](https://www.cgl.ucsf.edu/chimera/docs/UsersGuide/tutorials/pdbintro.html). Each PDB ouput file include 2 models. Model 1 and Model 2 are the aligned substructures in input RNA 1 and RNA 2 respectively. To view the alignment in PyMOL, click "Movie" in the menu and select "Show All States".  
+
 ### Example
 ```
 python3 run_circularSTAR3D.py --preprocess --pdb-id 3f2x --chain-id X
