@@ -54,7 +54,7 @@ in the same directory.
 ### Output files  
 The alignment output files have the suffix "aln". Each alignment output file includes the key parameters that are used to run CircularSTAR3D and the sorted local alignments. Each local alignment includes the rank of the alignment, the alignment score, the alignment nucleotide number, RMSD, and the nucleotide mapping. The format of the nucleotide mapping is "RNA1_chain_id:RNA1_nucleotide_id<->RNA2_chain_id:RNA2_nucleotide_id".  
 
-The PDB output files have the suffix "alnx.pdb", where "x" is the rank of the local alignment. The PDB files store the coordinate data for the local alignment that can be used for visualization and futher analysis. These files are in PDB format ([an introduction of PDB format](https://www.cgl.ucsf.edu/chimera/docs/UsersGuide/tutorials/pdbintro.html)). Each PDB ouput file include 2 models. Model 1 and Model 2 are the aligned substructures in input RNA 1 and RNA 2 respectively. To view the alignment in PyMOL, click "Movie" in the menu and select "Show All States".  
+The PDB output files have the suffix "alnx.pdb", where "x" is the rank of the local alignment. The PDB files store the coordinate data for the local alignment that can be used for visualization and futher analysis. These files are in PDB format ([an introduction of PDB format](https://www.cgl.ucsf.edu/chimera/docs/UsersGuide/tutorials/pdbintro.html)). Each PDB ouput file includes 2 models. Model 1 and Model 2 are the aligned substructures in input RNA 1 and RNA 2 respectively. To view the alignment in PyMOL, click "Movie" in the menu and select "Show All States".  
 
 ### Example
 ```
