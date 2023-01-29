@@ -21,8 +21,7 @@ Debian/Ubuntu: "apt-get install ant"
 Fedora/CentOS: "yum install ant"   
 
 ### Installation
-In home directory, run  
-"chmod +x ./setup.sh && ./setup.sh"
+In the root directory of this package, run "chmod +x ./setup.sh && ./setup.sh".
 
 ### Preprocessing
 CircularSTAR3D downloads PDB files and preprocesses them to retrieve the 
