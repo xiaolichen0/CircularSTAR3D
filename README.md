@@ -21,7 +21,7 @@ Debian/Ubuntu: "apt-get install ant"
 Fedora/CentOS: "yum install ant"   
 
 ### Installation
-In home directory
+In home directory, run  
 "chmod +x ./setup.sh && ./setup.sh"
 
 ### Preprocessing
