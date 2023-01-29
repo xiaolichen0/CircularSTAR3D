@@ -16,8 +16,8 @@ matrix computation. The two jar files have been already included into the packag
  "Apache ant" is required to compile the source code.
 
 Apache ant: http://ant.apache.org/bindownload.cgi 
-For Linux system, ant can be installed directly by using command line.
-Debian/Ubuntu: "apt-get install ant"
+For Linux system, ant can be installed directly by using command line.  
+Debian/Ubuntu: "apt-get install ant"  
 Fedora/CentOS: "yum install ant"   
 
 ### Installation
