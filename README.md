@@ -21,14 +21,18 @@ Debian/Ubuntu: "apt-get install ant"
 Fedora/CentOS: "yum install ant"   
 
 ### Installation
-In the root directory of this package, run "chmod +x ./setup.sh && ./setup.sh".
+CircularSTAR3D package provides compiled jar files that you can run directly.  
+If you want to build from the source code, go to the root directory of this package and run "chmod +x ./setup.sh && ./setup.sh". 
 
 ### Preprocessing
 CircularSTAR3D downloads PDB files and preprocesses them to retrieve the 
 secondary structural information.
 
-Go to the home directory and execute 
+Preprocess for circular matching, go to the root directory of CircularSTAR3D and execute 
 "python3 run_circularSTAR3D.py --preprocess --pdb-id [PDB ID] --chain-id [CHAIN ID]".
+
+Preprocess for regular local alignment, go to the root directory of CircularSTAR3D and execute 
+"python3 run_circularSTAR3D.py --non-rotate --preprocess --pdb-id [PDB ID] --chain-id [CHAIN ID]".
 
 If you want to use your custom PDB files, copy them into PDB/ before running the preprocess command. CircularSTAR3D will skip downloading from PDB website if the PDB files present in the PDB folder. Please use suffix ".pdb" for PDB format and suffix ".cif" for PDBx/mmcif format files.    
 
