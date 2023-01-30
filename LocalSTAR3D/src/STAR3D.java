@@ -4,7 +4,6 @@ import java.util.concurrent.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
-import jdk.nashorn.internal.runtime.regexp.joni.constants.OPCode;
 import org.apache.commons.cli.*;
 import org.ejml.data.*;
 import org.ejml.ops.CommonOps;
