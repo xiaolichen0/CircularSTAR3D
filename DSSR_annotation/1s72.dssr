@@ -18,8 +18,8 @@ Note: Each nucleotide is identified by model:chainId.name#, where the
       the output notation, please refer to the DSSR User Manual.
       Questions and suggestions are always welcome on the 3DNA Forum.
 
-Command: x3dna-dssr -i=/home/xiaoli/software/CircularSTAR3D/PDB/1s72.pdb --nested
-Date and time: Fri Jan 20 20:10:43 2023
+Command: x3dna-dssr -i=/home/xiaoli/software/ori_star/cSTAR3D/STAR3D_source/PDB/1s72.pdb --nested
+Date and time: Sun Dec 27 23:17:44 2020
 File name: 1s72.pdb
     no. of DNA/RNA chains: 2 [0=2754,9=122]
     no. of nucleotides:    2876
