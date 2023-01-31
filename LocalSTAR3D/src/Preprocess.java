@@ -61,8 +61,10 @@ public class Preprocess {
                 connection.setRequestMethod("GET");
                 connection.connect();
                 int pdbx_code = connection.getResponseCode();
-                if (pdbx_code > 400)
-                    System.out.println("Did not find " + PDBID + ".cif on http://www.rcsb.org.");
+                if (pdbx_code > 400) {
+                    System.out.println("Did not find " + PDBID + ".cif or " + PDBID + ".pdb on http://www.rcsb.org.");
+                    System.out.println("If you are using your own pdb file, please copy it into the PDB/ folder before running CircularSTAR3D");
+                }
                 else
                     pdb_type = 1;//find pdbx file
             }else

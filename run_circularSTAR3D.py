@@ -32,7 +32,6 @@ def main():
                         help="when using non-rotated, LocalSTAR3D is used for alignment and the rotated match will not be output")
     parser.add_argument("--preprocess", action="store_true",
                         help="run preprocess automatically, including downloading PDB and base-pair annotation")
-    parser.add_argument("--output", help="specify the output alignment file")
     parser.add_argument("--rmsd", help="rmsd cutoff for output alignments, default is 4 (Armstrong)")
     parser.add_argument("--minimum-stack-size", help="the minimum conserved stack size, default is 3 (base-pair)")
     parser.add_argument("--gap-open-penalty")
