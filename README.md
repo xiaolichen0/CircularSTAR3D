@@ -68,7 +68,7 @@ python3 run_circularSTAR3D.py --print-PDB 1 --minimum-stack-size 2 --pdb-id1 4fr
 python3 run_circularSTAR3D.py --non-rotate --minimum-stack-size 2 --pdb-id1 4frn --chain-id1 B --pdb-id2 3f2x --chain-id2 X
 ```
 
-### ACKNOWLEDGEMENTS
+### Acknowledgments
 CircularSTAR3D is developed for an NIH funded project (R01GM102515).
 
 CircularSTAR3D uses java packages Commons CLI and EJML.  
@@ -77,5 +77,5 @@ EJML: http://ejml.org/wiki/index.php?title=Main_Page
 
 CircularSTAR3D modified and reused code from [STAR3D](http://genome.ucf.edu/STAR3D/) for stack detection and loop alignment.  
   
-### CONTACT
+### Contact
 Xiaoli Chen is the author of CircularSTAR3D. For bug reports or comments please contact xiaoli.chen@knights.ucf.edu.
