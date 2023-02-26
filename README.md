@@ -7,7 +7,7 @@
 Where appropriate, please cite the following circularSTAR3D paper:
 Chen et al. "CircularSTAR3D: a stack-based RNA 3D structural alignment tool for circular matching.
 
-### Requirement
+### Requirements
 CircularSTAR3D is implemented by using java 1.8 and can be executed in 64-bit 
 Linux. Two java packages, "commons-cli-1.2.jar" and "EJML-core-0.26.jar", 
 are used in the program to support argument parsing and efficient 
@@ -60,7 +60,7 @@ The alignment output files have the suffix "aln". Each alignment output file inc
 
 The PDB output files have the suffix "alnx.pdb", where "x" is the rank of the local alignment. The PDB files store the coordinate data for the local alignment that can be used for visualization and futher analysis. These files are in PDB format ([an introduction of PDB format](https://www.cgl.ucsf.edu/chimera/docs/UsersGuide/tutorials/pdbintro.html)). Each PDB ouput file includes 2 models. Model 1 and Model 2 are the aligned substructures in input RNA 1 and RNA 2 respectively. The coodinates of the aligned substructure in input RNA 1 are rotated and translated to superimpose with RNA 2. The coodinates of the aligned substructure in input RNA 2 are the same with the original input files. To view the alignment in PyMOL, click "Movie" in the menu and select "Show All States".  
 
-### Example
+### Examples
 ```
 python3 run_circularSTAR3D.py --preprocess --pdb-id 3f2x --chain-id X
 python3 run_circularSTAR3D.py --preprocess --pdb-id 4frn --chain-id B
