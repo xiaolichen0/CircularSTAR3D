@@ -119,7 +119,7 @@ public class STAR3D{
 
 		if (cmd.hasOption("d") == true) {STAR3D.no_dangle_end = true;}
 
-		String STAR3D_PATH = new File(STAR3D.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParentFile().getPath();
+		String STAR3D_PATH = new File(STAR3D.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getPath();
 		String ROOT_PATH = new File(STAR3D_PATH).getParentFile().getPath();
 
 		File PDB_DATA_PATH=new File(ROOT_PATH, "PDB");
