@@ -137,7 +137,9 @@ public class DSSR {
                     //all nts in the internal loop
                     List<Integer> all_nts =  new ArrayList<Integer>();
                     for(String all_nt_str : Arrays.asList(line.split("nts")[1].split(" ")[2].split(","))) {
-                        String cur_chain = Arrays.asList(all_nt_str.split("\\.")).get(0);//7_28
+                        String cur_chain = Arrays.asList(all_nt_str.split("\\.")).get(0);
+                        if (cur_chain.contains(":"))
+                            cur_chain = Arrays.asList(cur_chain.split(":")).get(1);
                         if(!cur_chain.equals(chainID)) {//7_28
                             wrong_chain = true;//7_28
                         }
@@ -186,7 +188,9 @@ public class DSSR {
                     //all nts in the junctions
                     List<Integer> all_nts =  new ArrayList<Integer>();
                     for(String all_nt_str : Arrays.asList(line.split("nts")[1].split(" ")[2].split(","))) {
-                        String cur_chain = Arrays.asList(all_nt_str.split("\\.")).get(0);//7_28
+                        String cur_chain = Arrays.asList(all_nt_str.split("\\.")).get(0);
+                        if (cur_chain.contains(":"))
+                            cur_chain = Arrays.asList(cur_chain.split(":")).get(1);
                         if(!cur_chain.equals(chainID)) {//7_28
                             wrong_chain = true;//7_28
                         }
