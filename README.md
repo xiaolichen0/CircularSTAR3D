@@ -50,6 +50,7 @@ More options for the program can be seen by executing
 "python3 run_circularSTAR3D.py -h"
 
 Use "--non-rotate" to generate local alignment from LocalSTAR3D.  
+Use "--output-prefix" to set the prefix of the output files, The default prefix is "output".  
 Use "--print-PDB n" to generate PDB for top n alignments. The output PDB files will be named by using the same prefix of the output alingment file. For example, if the prefix is "4frn_B_3f2x_X", the output alignment file will be 4frn_B_3f2x_X.aln and the PDB file of the first alignment will be 4frn_B_3f2x_X.aln1.pdb. The default prefix is "output". The users can add path string to the prefix. The output files will be in the CircularSTAR3D root directory by default.  
 
 Notice: Make sure the folds "PDB", "STAR3D_struct_info" and the file "CircularSTAR3D.jar" 
