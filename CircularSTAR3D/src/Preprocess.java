@@ -111,10 +111,6 @@ public class Preprocess {
 		anno_file = new File(DSSR_ANNO_PATH, PDBID + ".dssr");
 		File DSSR_exe_file = new File("tools/DSSR/x3dna-dssr\"");
 
-//		if(!(anno_file.exists() && anno_file.length() > 0 || DSSR_exe_file.exists())){
-//			throw new Exception(DSSR_err_msg);
-//		}
-
 		if(anno_file.exists() && anno_file.length() >= 0){
 			System.out.println("Using existing DSSR annotation files");
 		} else {

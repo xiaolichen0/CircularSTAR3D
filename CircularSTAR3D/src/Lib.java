@@ -759,33 +759,30 @@ public class Lib {
 				out.print(in + " ");
 			out.println();
 
-//			for(Integer i1 : cur_aln.aligned_stack)
-//				out.println(STAR3D.SM_top.get(i1));
-
 			out.println("#Nucleotide mapping:");
 			for(int nt_index =0; nt_index < cur_aln.rna1_index.size();nt_index++) {
 				out.println(STAR3D.ResID1_list.get(cur_aln.rna1_index.get(nt_index))+"<->"+STAR3D.ResID2_list.get(cur_aln.rna2_index.get(nt_index)));
 			}
 
-			out.println("#for pymol");
-
-			out.print("0	"+PDBID1+"	"+chainID1+"	");
-			String aln1 = "";
-			String aln2 = "";
-			for(int nt_index = 0; nt_index < cur_aln.rna1_index.size();nt_index++) {
-				aln1 += STAR3D.ResID1_list.get(cur_aln.rna1_index.get(nt_index)).seqnum;
-				if(nt_index != cur_aln.rna1_index.size()-1)
-					aln1 += ",";
-			}
-			out.println(aln1 + "\t" + aln1);
-
-			out.print("1	"+PDBID2+"	"+chainID2+"	");
-			for(int nt_index = 0; nt_index < cur_aln.rna2_index.size();nt_index++) {
-				aln2 += STAR3D.ResID2_list.get(cur_aln.rna2_index.get(nt_index)).seqnum;
-				if(nt_index != cur_aln.rna2_index.size()-1)
-					aln2 += ",";
-			}
-			out.println(aln2 + "\t" + aln2);
+//			out.println("#for pymol");
+//
+//			out.print("0	"+PDBID1+"	"+chainID1+"	");
+//			String aln1 = "";
+//			String aln2 = "";
+//			for(int nt_index = 0; nt_index < cur_aln.rna1_index.size();nt_index++) {
+//				aln1 += STAR3D.ResID1_list.get(cur_aln.rna1_index.get(nt_index)).seqnum;
+//				if(nt_index != cur_aln.rna1_index.size()-1)
+//					aln1 += ",";
+//			}
+//			out.println(aln1 + "\t" + aln1);
+//
+//			out.print("1	"+PDBID2+"	"+chainID2+"	");
+//			for(int nt_index = 0; nt_index < cur_aln.rna2_index.size();nt_index++) {
+//				aln2 += STAR3D.ResID2_list.get(cur_aln.rna2_index.get(nt_index)).seqnum;
+//				if(nt_index != cur_aln.rna2_index.size()-1)
+//					aln2 += ",";
+//			}
+//			out.println(aln2 + "\t" + aln2);
 
 			out.println("#########");
 		}
