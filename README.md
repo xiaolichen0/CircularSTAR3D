@@ -66,6 +66,9 @@ The PDB output files have the suffix "alnx.pdb", where "x" is the rank of the lo
 python3 run_circularSTAR3D.py --preprocess --pdb-id 3f2x --chain-id X
 python3 run_circularSTAR3D.py --preprocess --pdb-id 4frn --chain-id B
 python3 run_circularSTAR3D.py --print-PDB 1 --minimum-stack-size 2 --pdb-id1 4frn --chain-id1 B --pdb-id2 3f2x --chain-id2 X
+
+python3 run_circularSTAR3D.py --non-rotate --preprocess --pdb-id 3f2x --chain-id X  
+python3 run_circularSTAR3D.py --non-rotate --preprocess --pdb-id 4frn --chain-id B  
 python3 run_circularSTAR3D.py --non-rotate --minimum-stack-size 2 --pdb-id1 4frn --chain-id1 B --pdb-id2 3f2x --chain-id2 X
 ```
 
